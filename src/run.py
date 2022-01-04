@@ -1,95 +1,23 @@
-from .ea import *
-from .ucea import *
-from .env import *
-import matplotlib.pyplot as plt
+from .algos.ea import *
+from .algos.ucea import *
+from .problems.problems import *
 import sys
-from tqdm import tqdm
 
-from scipy import interpolate
-
-def aggregate(X, Y):
-    X = np.array(X)
-    Y = np.array(Y)
-    F = [interpolate.interp1d(X[i], Y[i]) for i in range(len(X))] # Compute interpolation function
-    
-    # Compute bounds
-    max_evals = min([x[-1] for x in X])
-    min_evals = max([x[0] for x in X])
-    
-    # Create as many points
-    n = len(X[0])
-    step = (max_evals-min_evals)/n
-    new_X = np.arange(min_evals, max_evals+1, step)
-    new_X[-1]=int(new_X[-1])
-
-    # Interpolate new X
-    try:
-        new_Y = [f(new_X) for f in F]
-    except:
-        for k in range(len(F)):
-            f = F[k]
-            for x in new_X:
-                try:
-                    f(x)
-                except:
-                    print("Failing:", k, x)
-    
-    # Aggregate
-    # mean_Y = np.mean(new_Y, axis=0)
-    
-    return new_X, new_Y
-
+from .postproc.graphs import *
+from .postproc.postprocessing import *
+import pandas as pd
+import numpy as np
+import datetime
+import argparse
 
 def multi_run(algo, cfg, pb, gens, n, name=""):
-    X = [[] for _ in range(n)]
-    Y = [[] for _ in range(n)]
+    X = [[] for _ in range(n)] # Evaluations
+    Y = [[] for _ in range(n)] # Fitness
     for i in range(n):
         ea = algo(cfg, pb)
-        pbar = tqdm(range(gens))
-        pbar.set_description(name)
-        for gen in pbar:
-            ea.step()
-            f = np.mean([i.true_fitnesses[-1] for i in ea])
-            X[i].append(ea.total_evals)
-            Y[i].append(f)
-    
-    new_X, new_Y = aggregate(X, Y)
-    return {
-        "fitness": Y,
-        "gens":np.arange(gens)+1,
-        "fitness_evals": new_Y,
-        "evals":new_X
-    }
-
-def gen_graph(results, title="", save=None):
-    plt.figure(figsize=(16, 8))
-    for algo, d in results.items():
-        mean_Y = np.mean(d["fitness"], axis=0)
-        std = np.std(d["fitness"], axis=0)
-        plt.plot(mean_Y, label=algo)
-#        plt.fill_between(d["gens"], mean_Y-std, mean_Y+std)
-        
-    plt.legend()
-    plt.xlabel("Generations")
-    plt.ylabel("True fitness")
-    plt.title(title)
-    if save:
-        plt.savefig(save)
-
-def eval_graph(results, title="", save=None):
-    plt.figure(figsize=(16, 8))
-    for algo, d in results.items():
-        mean_Y = np.mean(d["fitness_evals"], axis=0)
-        std = np.std(d["fitness_evals"], axis=0)
-        plt.plot(d["evals"], mean_Y, label=algo)
-#        plt.fill_between(d["evals"], mean_Y-std, mean_Y+std)
-        
-    plt.legend()
-    plt.xlabel("Evaluations")
-    plt.ylabel("True fitness")
-    plt.title(title)
-    if save:
-        plt.savefig(save)
+        # print(ea)
+        X[i], Y[i] = ea.run(gens, name=name)
+    return X, Y
 
 
 def run_xp(basepb, 
@@ -126,16 +54,24 @@ def run_xp(basepb,
 
     for algo in algos:
         a = algo.__name__
-        results[a] = multi_run(algo, cfg, pb, gens, n_evals, name=f'{algo.__name__} | {noise}')
-
+        X, Y = multi_run(algo, cfg, pb, gens, n_evals, name=f'{algo.__name__} | {noise}')
+        path = f'saves/{noise_type}/Data_{a}_{basepb.name}_{int(noise*100)}'
+        # add timestamp to path
+        path += f'_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
+        save(X, Y, path)
+        X, Y = load(path)
+        results[a] = postprocessing(X, Y)
+        
     title = f"{basepb.name} - {int(noise*100)}% noise ({noise_type})"
+    # Fitness = f(gen)
     path = f"plots/{noise_type}/Gen_{basepb.name}_{int(noise*100)}.png"
+    gen_graph(results, title=title, save=path, max_val=max_fit)
 
-    gen_graph(results, title=title, save=path)
-
-    title = f"{basepb.name} - {int(noise*100)}% noise ({noise_type})"
+    # Fitness = f(eval)
     path = f"plots/{noise_type}/Eval_{basepb.name}_{int(noise*100)}.png"
+    eval_graph(results, title=title, save=path, max_val=max_fit)
 
-    eval_graph(results, title=title, save=path)
+    # Eval = f(gen)
+    path = f"plots/{noise_type}/Cost_{basepb.name}_{int(noise*100)}.png"
+    cost_graph(results, title=title, save=path)
 
-    # TODO: add graph "evals = f(gen)"

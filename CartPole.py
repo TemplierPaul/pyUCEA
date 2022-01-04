@@ -8,7 +8,7 @@ for noise in noise_levels:
         basepb=pb,
         max_fit=200,
         n_genes=pb.n_genes,
-        gens=100,
+        gens=250,
         normal_noise=False,
         noise=noise,
         n_evals=2
@@ -18,7 +18,7 @@ for noise in noise_levels:
         basepb=pb,
         max_fit=200,
         n_genes=pb.n_genes,
-        gens=100,
+        gens=250,
         normal_noise=True,
         noise=noise,
         n_evals=2

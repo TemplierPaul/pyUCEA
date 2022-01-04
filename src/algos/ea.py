@@ -1,6 +1,9 @@
 from .population import *
 import numpy as np
+import math
 import matplotlib.pyplot as plt
+from tqdm import tqdm
+
 
 class EA:
     def __init__(self, args, pb):
@@ -61,23 +64,35 @@ class EA:
         self.update()
         self.evaluate_children()
         N = 1
-        for _ in range(N):
-            for i in self.pop:
+        for i in self.pop:
+            i.reset_fitness()
+            for _ in range(N):
                 f, noise = self.evaluate(i)
                 self.pop.add_eval(i, f, noise)
                 self.gen_evals += 1
         self.sorted=False
         self.pop.sort()
         return self
-
+    
+    def run(self, gens, name=""):
+        pbar = tqdm(range(gens))
+        pbar.set_description(name)
+        X, Y = [], []
+        for gen in pbar:
+            self.step()
+            f = np.mean([i.true_fitnesses[-1] for i in self])
+            X.append(self.total_evals)
+            Y.append(f)
+        return X, Y
 
 class MultiEA(EA):
     def step(self):
         self.update()
         self.evaluate_children()
-        N = self.args["max_eval"] // self.args["n_pop"] # Distribute max evals between agents
-        for _ in range(N):
-            for i in self.pop:
+        N = math.floor(self.args["max_eval"] / self.args["n_pop"]) # Distribute max evals between agents
+        for i in self.pop:
+            i.reset_fitness()
+            for _ in range(N):
                 f, noise = self.evaluate(i)
                 self.pop.add_eval(i, f, noise)
                 self.gen_evals += 1

@@ -22,6 +22,12 @@ class Ind:
     
     def __str__(self):
         return self.__repr__()
+
+    def reset_fitness(self):
+        self.fitnesses = []
+        self.true_fitnesses = []
+        self.lifetime = 0
+        return self
         
     def random(self):
         self.genome=np.random.randn(self.args["n_genes"])
