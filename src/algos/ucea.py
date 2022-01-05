@@ -11,19 +11,21 @@ class UCEA(EA):
         return s      
     
     def step(self):
+        gen_evals = 0
         self.update()
         self.evaluate_children()
-        while self.gen_evals < self.args["max_eval"]:
+        while gen_evals < self.args["max_eval"]:
             l, h = self.pop.get_limits()
             A, B = self.pop[l[0]], self.pop[h[0]]
             d = self.pop.dist(A, B)
             if d <= self.args["epsilon"]:
                 break
-            fA, noise_A = self.evaluate(A)
-            self.pop.add_eval(A, fA, noise_A)
-            fB, noise_B = self.evaluate(B)
-            self.pop.add_eval(B, fB, noise_B)
-            self.gen_evals += 2
-            self.sorted=False
+
+            A, B = self.server.batch_evaluate([A, B])
+            gen_evals += 2
+            A.lifetime += 2
+            B.lifetime += 2
+            self.pop.sorted=False
         self.pop.sort()
+        self.total_evals += gen_evals
         return self

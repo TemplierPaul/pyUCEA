@@ -14,6 +14,7 @@ def aggregate(X, Y):
     # Create as many points
     n = len(X[0])
     step = (max_evals-min_evals)/n
+    assert step > 0, f"No points to interpolate between {min_evals} and {max_evals}"
     new_X = np.arange(min_evals, max_evals+1, step)
     new_X[-1]=int(new_X[-1])
 

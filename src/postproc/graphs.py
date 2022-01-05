@@ -8,7 +8,7 @@ matplotlib.rc('font', **font)
 def gen_graph(results, title="", save=None, max_val=None):
     plt.figure(figsize=(16, 8))
     for algo, d in results.items():
-        label = f"{algo} - {len(d['fitness'])} evals"
+        label = f"{algo} - {len(d['fitness'])} runs"
         mean_Y = np.mean(d["fitness"], axis=0)
         std = np.std(d["fitness"], axis=0)
         # print shapes
@@ -20,7 +20,7 @@ def gen_graph(results, title="", save=None, max_val=None):
         
     plt.legend()
     plt.xlabel("Generations")
-    plt.ylabel("True fitness")
+    plt.ylabel("Mean true fitness")
     plt.title(title)
     if save:
         plt.savefig(save)
@@ -28,7 +28,7 @@ def gen_graph(results, title="", save=None, max_val=None):
 def eval_graph(results, title="", save=None, max_val=None):
     plt.figure(figsize=(16, 8))
     for algo, d in results.items():
-        label = f"{algo} - {len(d['fitness_evals'])} evals"
+        label = f"{algo} - {len(d['fitness_evals'])} runs"
         mean_Y = np.mean(d["fitness_evals"], axis=0)
         std = np.std(d["fitness_evals"], axis=0)
         plt.plot(d["evals"], mean_Y, label=label)
@@ -40,7 +40,7 @@ def eval_graph(results, title="", save=None, max_val=None):
 
     plt.legend()
     plt.xlabel("Evaluations")
-    plt.ylabel("True fitness")
+    plt.ylabel("Mean true fitness")
     plt.title(title)
     if save:
         plt.savefig(save)
@@ -48,7 +48,7 @@ def eval_graph(results, title="", save=None, max_val=None):
 def cost_graph(results, title="", save=None):
     plt.figure(figsize=(16, 8))
     for algo, d in results.items():
-        label = f"{algo} - {len(d['cost'])} evals"
+        label = f"{algo} - {len(d['cost'])} runs"
         diff = [i[1:] - i[:-1] for i in d["cost"]]
         diff = np.array([np.insert(diff[i], 0, d["cost"][i][0]) for i in range(len(diff))])
         

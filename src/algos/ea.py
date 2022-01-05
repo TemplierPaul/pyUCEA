@@ -3,14 +3,13 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-
+from ..problems.mpi import *
 
 class EA:
     def __init__(self, args, pb):
         self.args = args
-        self.pb = pb
+        self.server = Server(pb)
         self.pop = Population(args).random()
-        self.gen_evals = 0
         self.total_evals = 0
         
     def __len__(self):
@@ -41,35 +40,27 @@ class EA:
             parent = self.get_parent()
             children.append(parent.mutate())
         self.pop.add(children)
-        self.gen_evals = 0
         self.sorted=False
         return self
     
     def evaluate_children(self):
-        for i in self.pop:
-            if len(i.fitnesses) == 0:
-                f, noise = self.evaluate(i)
-                self.pop.add_eval(i, f, noise)
-                self.gen_evals += 1
+        children = [i for i in self.pop if len(i.fitnesses) == 0]
+        self.server.batch_evaluate(children)
+        self.total_evals += len(children)
+        for i in children:
+            i.lifetime += 1
         self.sorted=False
+        self.pop.update()
         self.pop.sort()
-        return self
-    
-    def evaluate(self, agent):
-        f, noise = self.pb.evaluate(agent.genome)
-        self.total_evals += 1
-        return f, noise
+        return len(children)
     
     def step(self):
         self.update()
-        self.evaluate_children()
-        N = 1
+        # self.evaluate_children()
         for i in self.pop:
             i.reset_fitness()
-            for _ in range(N):
-                f, noise = self.evaluate(i)
-                self.pop.add_eval(i, f, noise)
-                self.gen_evals += 1
+        self.server.batch_evaluate(self.pop.agents)
+        self.total_evals += len(self.pop.agents)
         self.sorted=False
         self.pop.sort()
         return self
@@ -88,14 +79,15 @@ class EA:
 class MultiEA(EA):
     def step(self):
         self.update()
-        self.evaluate_children()
-        N = math.floor(self.args["max_eval"] / self.args["n_pop"]) # Distribute max evals between agents
+        n_children = self.evaluate_children()
+        # Distribute max evals between agents
+        N = math.floor((self.args["max_eval"] - n_children)/ self.args["n_pop"])
+
         for i in self.pop:
             i.reset_fitness()
-            for _ in range(N):
-                f, noise = self.evaluate(i)
-                self.pop.add_eval(i, f, noise)
-                self.gen_evals += 1
+        eval_agents = list(self.pop.agents) * N
+        self.server.batch_evaluate(eval_agents)
+        self.total_evals += len(eval_agents)
         self.sorted=False
         self.pop.sort()
         return self

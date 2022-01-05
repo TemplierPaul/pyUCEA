@@ -8,7 +8,6 @@ from .postproc.postprocessing import *
 import pandas as pd
 import numpy as np
 import datetime
-import argparse
 
 def multi_run(algo, cfg, pb, gens, n, name=""):
     X = [[] for _ in range(n)] # Evaluations
@@ -21,22 +20,21 @@ def multi_run(algo, cfg, pb, gens, n, name=""):
 
 
 def run_xp(basepb, 
-    max_fit, 
-    n_genes, 
     gens=1000, 
     normal_noise=False,
     noise=0,
     n_evals=1
     ):
+    max_fit = basepb.max_fit
     cfg = {
         "n_pop":12,
         "n_elites":6,
-        "n_genes":n_genes, 
+        "n_genes":basepb.n_genes, 
         "delta":0.1,
         "epsilon":0.1,
         "mut_size":0.3,
         "max_eval":120,
-        "max_fit":10,
+        "max_fit":max_fit,
         "noise_level": noise
     }
 
@@ -44,7 +42,7 @@ def run_xp(basepb,
     noise_type='Normal' if normal_noise else 'Uniform'
 
 
-    pb = Noisy(basepb, noise=noise, max_fit=max_fit, normal=normal_noise)
+    pb = Noisy(basepb, noise=noise, normal=normal_noise)
 
     gen_fitness = [[] for _ in algos]
     eval_fitness = [[] for _ in algos]

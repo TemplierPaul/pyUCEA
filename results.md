@@ -1,7 +1,9 @@
 # Results
-`TODO: Add evals = f(gen) graph`
 
 ## Noisy sum
+- Vector or 10 floating point values
+- Goal: find a vector of ones
+- Fitness: $$10 - MSE(genome, [1, ..., 1])$$
 ### Uniform noise
 
 |%Noise|Fitness / Gen |Fitness / Eval| Cost / Gen |
@@ -24,6 +26,11 @@
 
 
 ## CartPole 
+- Gym CartPole-v1
+- 10 neurons in the hidden layer
+- Max 200 steps
+
+
 ### Uniform noise
 
 |%Noise|Fitness / Gen |Fitness / Eval| Cost / Gen |
