@@ -16,7 +16,7 @@ def multi_run(algo, cfg, pb, gens, n, name=""):
         ea = algo(cfg, pb)
         # print(ea)
         X[i], Y[i] = ea.run(gens, name=name)
-        ea.plot()
+        ea.pop.plot()
     return X, Y
 
 
