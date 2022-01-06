@@ -24,8 +24,8 @@ class Population:
         
     def sort(self):
         if not self.sorted:
-            f = np.argsort([-i.fitness for i in self.agents])
-            self.agents = self.agents[f]
+            f = np.argsort([-i.fitness for i in self.agents]) # highest fitness first
+            self.agents = self.agents[f] # highest fitness first
             self.sorted = True
         return self
         
@@ -37,7 +37,7 @@ class Population:
         t = ind.lifetime
         d = self.args["delta"]
         n = len(self.agents)
-        ind.beta = np.sqrt(
+        ind.beta = self.args["scaling_factor"] * np.sqrt(
             np.log(1.25 * n * (t ** 4) / d) / (2.0 * u)
         )
         return ind

@@ -70,18 +70,16 @@ class EA:
     
     def run(self, gens, name=""):
         max_evals = 20000
-        pbar = tqdm(range(max_evals))
+        pbar = tqdm(total=max_evals)
         pbar.set_description(name)
         X, Y = [], []
         while self.total_evals < max_evals:
             self.step()
             f = np.max([np.mean(i.true_fitnesses) for i in self])
-            pbar.n = self.total_evals
-            pbar.refresh()
+            pbar.update(self.total_evals - pbar.n)
             X.append(self.total_evals)
             Y.append(f)
-        pbar.n = self.gen
-        pbar.refresh()
+        pbar.close()
         return X, Y
 
 class MultiEA(EA):
