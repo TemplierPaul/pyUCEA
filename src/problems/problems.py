@@ -23,6 +23,7 @@ class Problem:
     def evaluate(self, genome, **kwargs):
         pass
 
+
 @register_pb("all_ones")
 class AllOnes(Problem):
     def __init__(self):
@@ -34,12 +35,29 @@ class AllOnes(Problem):
         return f"All Ones - {self.n_genes} genes"
 
     def evaluate(self, genome, **kwargs):
-        n = len(genome)
-        ones = np.ones(n)
-        # mse 
-        f = 10 - np.mean(np.square(genome - ones))
-        # f = np.sum(- np.abs(genome - ones)) + 10
+        genome = np.round(np.clip(genome, 0.0, 1.0))
+        f = np.sum(genome)
         return f, 0
+
+
+@register_pb("leading_ones")
+class LeadingOnes(Problem):
+    def __init__(self):
+        self.name = "Leading_Ones"
+        self.n_genes = 10
+        self.max_fit = 10
+
+    def __repr__(self):
+        return f"Leading Ones - {self.n_genes} genes"
+
+    def evaluate(self, genome, **kwargs):
+        genome = np.round(genome)
+        if np.sum(genome) == len(genome):
+            f = len(genome)
+        else:
+            f = np.argmin(genome)
+        return f, 0
+
 
 class RL(Problem):
     def __init__(self, env):
