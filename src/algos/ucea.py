@@ -11,10 +11,11 @@ class UCEA(EA):
         return s      
     
     def step(self):
-        gen_evals = 0
-        self.update()
-        self.evaluate_children()
+        if self.gen > 0:
+            self.update()
+        gen_evals = self.evaluate_children()
         while gen_evals < self.args["max_eval"]:
+            self.pop.update()
             l, h = self.pop.get_limits()
             A, B = self.pop[l[0]], self.pop[h[0]]
             d = self.pop.dist(A, B)
@@ -23,9 +24,9 @@ class UCEA(EA):
 
             A, B = self.server.batch_evaluate([A, B])
             gen_evals += 2
-            A.lifetime += 2
-            B.lifetime += 2
-            self.pop.sorted=False
+            for i in self.pop:
+                i.lifetime += 2
         self.pop.sort()
         self.total_evals += gen_evals
+        self.gen += 1
         return self
