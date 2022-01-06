@@ -8,11 +8,19 @@
 
 |%Noise|Fitness / Gen |Fitness / Eval| Cost / Gen |
 |---|---|---|---|
-|0%|![](plots/Uniform/Gen_All_Ones_0.png)|![](plots/Uniform/Eval_All_Ones_0.png)|![](plots/Uniform/Cost_All_Ones_0.png)
+<!-- |0%|![](plots/Uniform/Gen_All_Ones_0.png)|![](plots/Uniform/Eval_All_Ones_0.png)|![](plots/Uniform/Cost_All_Ones_0.png)
 |25%|![](plots/Uniform/Gen_All_Ones_25.png)|![](plots/Uniform/Eval_All_Ones_25.png)|![](plots/Uniform/Cost_All_Ones_25.png)
 |50%|![](plots/Uniform/Gen_All_Ones_50.png)|![](plots/Uniform/Eval_All_Ones_50.png)|![](plots/Uniform/Cost_All_Ones_50.png)
 |75%|![](plots/Uniform/Gen_All_Ones_75.png)|![](plots/Uniform/Eval_All_Ones_75.png)|![](plots/Uniform/Cost_All_Ones_75.png)
 |100%|![](plots/Uniform/Gen_All_Ones_100.png)|![](plots/Uniform/Eval_All_Ones_100.png)|![](plots/Uniform/Cost_All_Ones_100.png)
+|200%|![](plots/Uniform/Gen_All_Ones_200.png)|![](plots/Uniform/Eval_All_Ones_200.png)|![](plots/Uniform/Cost_All_Ones_200.png) -->
+
+|0%|![](plots/Uniform/Eval_All_Ones_0.png)
+|25%|![](plots/Uniform/Eval_All_Ones_25.png)
+|50%|![](plots/Uniform/Eval_All_Ones_50.png)
+|75%|![](plots/Uniform/Eval_All_Ones_75.png)
+|100%|![](plots/Uniform/Eval_All_Ones_100.png)
+|200%|![](plots/Uniform/Eval_All_Ones_200.png)
 
 ### Normal noise
 |%Noise|Fitness / Gen |Fitness / Eval| Cost / Gen |

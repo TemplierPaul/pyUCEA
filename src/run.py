@@ -34,6 +34,7 @@ def run_xp(basepb,
         "epsilon":0.1,
         "mut_size":0.3,
         "max_eval":120,
+        "n_resampling":10,
         "max_fit":max_fit,
         "noise_level": noise
     }
@@ -63,7 +64,7 @@ def run_xp(basepb,
     title = f"{basepb.name} - {int(noise*100)}% noise ({noise_type})"
     # Fitness = f(gen)
     path = f"plots/{noise_type}/Gen_{basepb.name}_{int(noise*100)}.png"
-    gen_graph(results, title=title, save=path, max_val=max_fit)
+    # gen_graph(results, title=title, save=path, max_val=max_fit)
 
     # Fitness = f(eval)
     path = f"plots/{noise_type}/Eval_{basepb.name}_{int(noise*100)}.png"
@@ -71,5 +72,5 @@ def run_xp(basepb,
 
     # Eval = f(gen)
     path = f"plots/{noise_type}/Cost_{basepb.name}_{int(noise*100)}.png"
-    cost_graph(results, title=title, save=path)
+    # cost_graph(results, title=title, save=path)
 

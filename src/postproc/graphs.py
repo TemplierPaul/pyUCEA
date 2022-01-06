@@ -41,6 +41,7 @@ def eval_graph(results, title="", save=None, max_val=None):
     plt.legend()
     plt.xlabel("Evaluations")
     plt.ylabel("Mean true fitness")
+    # plt.xlim(0, 20000)
     plt.title(title)
     if save:
         plt.savefig(save)

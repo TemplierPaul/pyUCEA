@@ -11,6 +11,7 @@ class EA:
         self.server = Server(pb)
         self.pop = Population(args).random()
         self.total_evals = 0
+        self.gen=0
         
     def __len__(self):
         return len(self.pop)
@@ -40,54 +41,58 @@ class EA:
             parent = self.get_parent()
             children.append(parent.mutate())
         self.pop.add(children)
-        self.sorted=False
+        self.pop.sorted=False
         return self
     
     def evaluate_children(self):
         children = [i for i in self.pop if len(i.fitnesses) == 0]
         self.server.batch_evaluate(children)
         self.total_evals += len(children)
-        for i in children:
-            i.lifetime += 1
-        self.sorted=False
+        for i in self.pop.agents:
+            i.lifetime += len(children)
+        self.pop.sorted=False
         self.pop.update()
         self.pop.sort()
         return len(children)
     
     def step(self):
-        self.update()
-        # self.evaluate_children()
+        if self.gen > 0:
+            self.update()
+        # n_children = self.evaluate_children()
         for i in self.pop:
             i.reset_fitness()
         self.server.batch_evaluate(self.pop.agents)
         self.total_evals += len(self.pop.agents)
-        self.sorted=False
+        self.pop.sorted=False
         self.pop.sort()
+        self.gen += 1
         return self
     
     def run(self, gens, name=""):
-        pbar = tqdm(range(gens))
+        max_evals = 20000
+        pbar = tqdm(range(max_evals))
         pbar.set_description(name)
         X, Y = [], []
-        for gen in pbar:
+        while self.total_evals < max_evals:
             self.step()
-            f = np.mean([i.true_fitnesses[-1] for i in self])
+            f = np.max([np.mean(i.true_fitnesses) for i in self])
+            pbar.n = self.total_evals
+            pbar.refresh()
             X.append(self.total_evals)
             Y.append(f)
+        pbar.n = self.gen
+        pbar.refresh()
         return X, Y
 
 class MultiEA(EA):
     def step(self):
-        self.update()
-        n_children = self.evaluate_children()
-        # Distribute max evals between agents
-        N = math.floor((self.args["max_eval"] - n_children)/ self.args["n_pop"])
-
-        for i in self.pop:
-            i.reset_fitness()
-        eval_agents = list(self.pop.agents) * N
+        if self.gen > 0:
+            self.update()
+        
+        eval_agents = [i for i in self.pop.agents if i.n_evals == 0] * self.args["n_resampling"]
         self.server.batch_evaluate(eval_agents)
         self.total_evals += len(eval_agents)
-        self.sorted=False
+        self.pop.sorted=False
         self.pop.sort()
+        self.gen += 1
         return self

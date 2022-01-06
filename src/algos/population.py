@@ -42,14 +42,13 @@ class Population:
         )
         return ind
     
-    def add_eval(self, ind, fit, noise):
-        ind.fitnesses.append(fit + noise)
-        ind.true_fitnesses.append(fit)
-        self.update()
+    # def add_eval(self, ind, fit, noise):
+    #     ind.fitnesses.append(fit + noise)
+    #     ind.true_fitnesses.append(fit)
+    #     self.update()
     
     def update(self):
         for i in self.agents:
-            i.lifetime += 1
             self.set_bounds(i)
         self.sorted = False
         return self

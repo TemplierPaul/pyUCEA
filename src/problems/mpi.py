@@ -19,7 +19,7 @@ class Client:
         self.rank = self.comm.Get_rank() # The process ID (integer 0-3 for 4-process run)
         self.size = self.comm.Get_size() # The number of processes
 
-        flush(f"Creating node {self.rank}\n")
+        # flush(f"Creating node {self.rank}\n")
 
     def __repr__(self):
         return f"Secondary {self.rank}"
