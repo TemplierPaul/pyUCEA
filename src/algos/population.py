@@ -18,7 +18,7 @@ class Population:
         return len(self.agents)
         
     def random(self):
-        self.agents = np.array([Ind(self.args).random() for _ in range(self.args["n_pop"])])
+        self.agents = np.array([BoolInd(self.args).random() for _ in range(self.args["n_pop"])])
         self.sorted = False
         return self
         

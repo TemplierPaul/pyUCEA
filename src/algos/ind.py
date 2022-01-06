@@ -1,4 +1,5 @@
 import numpy as np
+from copy import deepcopy
 
 class Ind:
     def __init__(self, args, genome=None):
@@ -39,3 +40,16 @@ class Ind:
         new_i = Ind(self.args, genome=new_g)
         return new_i
 
+
+class BoolInd(Ind):
+
+    def random(self):
+        self.genome = np.random.randint(2, size=10) * 1.0
+        return self
+
+    def mutate(self):
+        new_g = deepcopy(self.genome)
+        switch = np.random.rand(len(self.genome)) < 0.1
+        new_g[switch] = 1.0 - new_g[switch]
+        new_i = BoolInd(self.args, genome=new_g)
+        return new_i
