@@ -37,7 +37,7 @@ def run_xp(server, args):
 
     for algo in algos:
         a = algo.__name__
-        X, Y = multi_run(algo, cfg, server, args.n_evals, name=f'{algo.__name__} | {args.noise}')
+        X, Y = multi_run(algo, cfg, server, args.n_evals, name=f'{algo.__name__} | {args.problem} | {args.noise}')
         path = f'saves/{noise_type}/Data_{a}_{server.pb.name}_{int(args.noise*100)}'
         # add timestamp to path
         path += f'_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
@@ -45,7 +45,13 @@ def run_xp(server, args):
         X, Y = load(path)
         results[a] = postprocessing(X, Y)
         
-    title = f"{server.pb.name} - {int(args.noise*100)}% noise ({noise_type})"
+    if server.pb.name[0]=="F":
+        title = f"{server.pb.name[2:]} - {int(args.noise*100)}% noise ({noise_type} fitness noise)"
+    elif server.pb.name[0]=="A":
+        title = f"{server.pb.name[2:]} - {int(args.noise*100)}% noise (Action noise)"
+    elif server.pb.name[0]=="S":
+        title = f"{server.pb.name[2:]} (Seed noise)"
+
     # Fitness = f(gen)
     path = f"plots/{noise_type}/Gen_{server.pb.name}_{int(args.noise*100)}.png"
     # gen_graph(results, title=title, save=path, max_val=args.max_fit)

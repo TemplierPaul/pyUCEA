@@ -82,11 +82,11 @@ class RL(Problem):
         self.config = cfg
         self.Net = cfg["net"]
         self.n_genes = get_genome_size(self.Net, c51=False)
-        self.name = env
+        self.name = cfg["env"]
         self.max_fit = 200
         self.bool_ind = False
 
-        env = make_env(self.config["env"], seed=seed, render=render)
+        env = make_env(self.config["env"])
         self.n_actions = env.action_space.n
         env.close()
 
@@ -96,10 +96,7 @@ class RL(Problem):
     def get_action(self, agent, obs):
         return agent.act(obs)
 
-    def evaluate(self, genome, seed=0, render=False, test=False):
-        if seed < 0:
-            seed = np.random.randint(0, 1000000000)
-        seed=0
+    def evaluate(self, genome, seed=0, render=False):
         env = make_env(self.config["env"], seed=seed, render=render)
         agent = self.make_agent(genome)
 
@@ -114,9 +111,6 @@ class RL(Problem):
             while not done and n_frames < self.config["episode_frames"]:
                 action = self.get_action(agent, obs)
                 obs, r, done, _ = env.step(action)
-
-                if self.config["reward_clip"]>0:
-                    r = max(min(r, self.config["reward_clip"]), -self.config["reward_clip"])
 
                 if render:
                     env.render()
@@ -141,8 +135,7 @@ def f():
     cfg = {
         "env":game,
         "episode_frames":200,
-        "reward_clip":False,
-        "c51":False,
+        # "c51":False,
         "stack_frames": 1,
         "net":gym_flat_net(game, 10)
     }
@@ -157,6 +150,7 @@ class NoisyFit:
         self.pb = pb
         self.noise = noise
         self.normal=normal
+        self.pb.name = f"F_{self.pb.name}"
 
     def __repr__(self):
         return f"Noisy ({int(self.noise*100)}%) {self.pb}"
@@ -174,7 +168,7 @@ class NoisyFit:
             return np.random.random() * 2 - 1
         
     def evaluate(self, genome, noisy=True):
-        real_fit, _ = self.pb.evaluate(genome)
+        real_fit, _ = self.pb.evaluate(genome, seed=0)
         if not noisy:
             return real_fit, 0
         noise = self.get_noise() * self.max_fit * self.noise 
@@ -189,6 +183,8 @@ class NoisyAction:
         self.normal=normal
         # Noisy action (replace function)
         self.pb.get_action = self.get_action
+        self.pb.name = f"A_{self.pb.name}"
+
 
     def __repr__(self):
         return f"Noisy ({int(self.noise*100)}%) {self.pb}"
@@ -207,3 +203,25 @@ class NoisyAction:
 
     def evaluate(self, genome, noisy=True):
         return self.pb.evaluate(genome)
+
+# Wrapper for RL with noisy actions, but no additional noise on the fitness
+@register_pb("noise_seed")
+class NoisySeed:
+    def __init__(self, pb, noise=0.5, normal=True):
+        self.pb = pb
+        self.noise = noise
+        self.normal=normal
+        self.pb.name = f"S_{self.pb.name}"
+
+    def __repr__(self):
+        return f"Noisy ({int(self.noise*100)}%) {self.pb}"
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __getattr__(self, key):
+        return self.pb.__getattribute__(key)
+
+    def evaluate(self, genome, noisy=True):
+        seed = np.random.randint(0, 100000000)
+        return self.pb.evaluate(genome, seed=seed)

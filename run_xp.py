@@ -3,6 +3,9 @@ from src.run import *
 from mpi4py import MPI
 import argparse
 
+import warnings
+warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning) 
+
 # Create args parser
 parser = argparse.ArgumentParser(description='Run EA on a given problem')
 parser.add_argument('--problem', type=str, default='all_ones', help='Problem to run')
@@ -41,7 +44,6 @@ if __name__ == "__main__":
     basepb = PROBLEMS[args.problem]()
     
     noise_wrapper = PROBLEMS[f"noise_{args.noise_type}"]
-    print(noise_wrapper)
     pb = noise_wrapper(basepb, noise=args.noise, normal=args.normal_noise)
 
     args.n_genes = pb.n_genes

@@ -15,12 +15,12 @@
 
 |%Noise|Fitness / Eval
 |---|---|
-|0%|![](plots/Uniform/Eval_All_Ones_0.png)
-|25%|![](plots/Uniform/Eval_All_Ones_25.png)
-|50%|![](plots/Uniform/Eval_All_Ones_50.png)
-|75%|![](plots/Uniform/Eval_All_Ones_75.png)
-|100%|![](plots/Uniform/Eval_All_Ones_100.png)
-|200%|![](plots/Uniform/Eval_All_Ones_200.png)
+|0%|![](plots/Uniform/Eval_F_All_Ones_0.png)
+|25%|![](plots/Uniform/Eval_F_All_Ones_25.png)
+|50%|![](plots/Uniform/Eval_F_All_Ones_50.png)
+|75%|![](plots/Uniform/Eval_F_All_Ones_75.png)
+|100%|![](plots/Uniform/Eval_F_All_Ones_100.png)
+|200%|![](plots/Uniform/Eval_F_All_Ones_200.png)
 
 
 ## Float All Ones
@@ -33,24 +33,24 @@
 
 |%Noise|Fitness / Eval
 |---|---|
-|0%|![](plots/Uniform/Eval_Float_All_Ones_0.png)
-|25%|![](plots/Uniform/Eval_Float_All_Ones_25.png)
-|50%|![](plots/Uniform/Eval_Float_All_Ones_50.png)
-|75%|![](plots/Uniform/Eval_Float_All_Ones_75.png)
-|100%|![](plots/Uniform/Eval_Float_All_Ones_100.png)
-|200%|![](plots/Uniform/Eval_Float_All_Ones_200.png)
+|0%|![](plots/Uniform/Eval_F_Float_All_Ones_0.png)
+|25%|![](plots/Uniform/Eval_F_Float_All_Ones_25.png)
+|50%|![](plots/Uniform/Eval_F_Float_All_Ones_50.png)
+|75%|![](plots/Uniform/Eval_F_Float_All_Ones_75.png)
+|100%|![](plots/Uniform/Eval_F_Float_All_Ones_100.png)
+|200%|![](plots/Uniform/Eval_F_Float_All_Ones_200.png)
 
 ## Leading Ones
 ### Uniform noise
 
 |%Noise|Fitness / Eval
 |---|---|
-|0%|![](plots/Uniform/Eval_Leading_Ones_0.png)
-|25%|![](plots/Uniform/Eval_Leading_Ones_25.png)
-|50%|![](plots/Uniform/Eval_Leading_Ones_50.png)
-|75%|![](plots/Uniform/Eval_Leading_Ones_75.png)
-|100%|![](plots/Uniform/Eval_Leading_Ones_100.png)
-|200%|![](plots/Uniform/Eval_Leading_Ones_200.png)
+|0%|![](plots/Uniform/Eval_F_Leading_Ones_0.png)
+|25%|![](plots/Uniform/Eval_F_Leading_Ones_25.png)
+|50%|![](plots/Uniform/Eval_F_Leading_Ones_50.png)
+|75%|![](plots/Uniform/Eval_F_Leading_Ones_75.png)
+|100%|![](plots/Uniform/Eval_F_Leading_Ones_100.png)
+|200%|![](plots/Uniform/Eval_F_Leading_Ones_200.png)
 
 
 ## CartPole 
@@ -59,15 +59,15 @@
 - Max 200 steps
 
 
-### Uniform noise
+### Noise on actions
 |%Noise|Fitness / Eval
 |---|---|
-|0%|![](plots/Uniform/Eval_CartPole-v1_0.png)
-|25%|![](plots/Uniform/Eval_CartPole-v1_25.png)
-|50%|![](plots/Uniform/Eval_CartPole-v1_50.png)
-|75%|![](plots/Uniform/Eval_CartPole-v1_75.png)
-|100%|![](plots/Uniform/Eval_CartPole-v1_100.png)
-|200%|![](plots/Uniform/Eval_CartPole-v1_200.png)
+|0%|![](plots/Uniform/Eval_A_CartPole-v1_0.png)
+|25%|![](plots/Uniform/Eval_A_CartPole-v1_25.png)
+|50%|![](plots/Uniform/Eval_A_CartPole-v1_50.png)
+|75%|![](plots/Uniform/Eval_A_CartPole-v1_75.png)
+|100%|![](plots/Uniform/Eval_A_CartPole-v1_100.png)
 
-
-
+## Noise on seed
+(Ignore the noise % in the title)
+![](plots/Uniform/Eval_S_CartPole-v1_0.png)
