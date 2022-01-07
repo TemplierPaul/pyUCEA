@@ -4,7 +4,6 @@ import numpy as np
 from collections import OrderedDict
 import sys
 import time
-import berl
 
 def flush(msg):
     sys.stdout.write(msg)

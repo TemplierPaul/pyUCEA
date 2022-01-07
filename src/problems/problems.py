@@ -1,5 +1,7 @@
-import berl
 import numpy as np
+from ..utils.models import get_genome_size, gym_flat_net
+from ..algos.rl_agent import Agent
+from .env.env import make_env
 
 PROBLEMS={}
 
@@ -85,8 +87,8 @@ class RL(Problem):
             "c51":False,
             "stack_frames": 1
         }
-        self.Net = berl.gym_flat_net(env, 10)
-        self.n_genes = berl.get_genome_size(self.Net, c51=False)
+        self.Net = gym_flat_net(env, 10)
+        self.n_genes = get_genome_size(self.Net, c51=False)
         self.name = env
         self.max_fit = 200
         self.bool_ind = False
@@ -98,7 +100,7 @@ class RL(Problem):
         if seed < 0:
             seed = np.random.randint(0, 1000000000)
         seed=0
-        env = berl.make_env(self.config["env"], seed=seed, render=render)
+        env = make_env(self.config["env"], seed=seed, render=render)
         agent = self.make_agent(genome)
 
         # Virtual batch normalization 
@@ -131,7 +133,7 @@ class RL(Problem):
         return total_r, 0
 
     def make_agent(self, genome=None):
-        i = berl.Agent(self.Net, self.config)
+        i = Agent(self.Net, self.config)
         if genome is not None:
             i.genes = genome
         return i
