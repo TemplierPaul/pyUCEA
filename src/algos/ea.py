@@ -5,10 +5,20 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 from ..problems.mpi import *
 
+ALGOS = {}
+
+# register class as an algorithm
+def register_algo(name):
+    def wrapped(cls):
+        ALGOS[name] = cls
+        return cls
+    return wrapped
+
+@register_algo("ea")
 class EA:
-    def __init__(self, args, pb):
+    def __init__(self, args, server):
         self.args = args
-        self.server = Server(pb)
+        self.server = server
         self.pop = Population(args).random()
         self.total_evals = 0
         self.gen=0
@@ -68,12 +78,11 @@ class EA:
         self.gen += 1
         return self
     
-    def run(self, gens, name=""):
-        max_evals = 20000
-        pbar = tqdm(total=max_evals)
+    def run(self, name=""):
+        pbar = tqdm(total=self.args["total_evals"])
         pbar.set_description(name)
         X, Y = [], []
-        while self.total_evals < max_evals:
+        while self.total_evals < self.args["total_evals"]:
             self.step()
             f = np.max([np.mean(i.true_fitnesses) for i in self])
             pbar.update(self.total_evals - pbar.n)
@@ -82,6 +91,7 @@ class EA:
         pbar.close()
         return X, Y
 
+@register_algo("rs")
 class MultiEA(EA):
     def step(self):
         if self.gen > 0:

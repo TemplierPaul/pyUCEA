@@ -99,6 +99,8 @@ class Server(Client):
             }
             self.comm.send(d, dest=i)
             index += 1
+            if index == len(agents):
+                break
         
         self.waitings=self.waitings[index:]
 

@@ -132,6 +132,8 @@ class Noisy:
         self.pb = pb
         self.noise = noise
         self.max_fit=self.pb.max_fit
+        self.n_genes=self.pb.n_genes
+        self.name=self.pb.name
         self.normal=normal
 
     def __repr__(self):

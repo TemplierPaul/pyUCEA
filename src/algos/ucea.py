@@ -1,5 +1,6 @@
 from .ea import *
 
+@register_algo("ucea")
 class UCEA(EA):
     def __init__(self, args, pb):
         super().__init__(args, pb)
