@@ -40,6 +40,20 @@ class AllOnes(Problem):
         f = np.sum(genome)
         return f, 0
 
+@register_pb("float_all_ones")
+class AllOnes(Problem):
+    def __init__(self):
+        self.name = "Float_All_Ones"
+        self.n_genes = 10
+        self.max_fit = 10
+        self.bool_ind = False
+
+    def __repr__(self):
+        return f"Float All Ones - {self.n_genes} genes"
+
+    def evaluate(self, genome, **kwargs):
+        f = 10-np.mean(np.square(genome-np.ones(self.n_genes)))
+        return f, 0
 
 @register_pb("leading_ones")
 class LeadingOnes(Problem):
