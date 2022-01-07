@@ -1,6 +1,6 @@
 from .algos.ea import *
 from .algos.ucea import *
-from .problems.problems import *
+from .problems.noise import *
 import sys
 
 from .postproc.graphs import *
@@ -44,6 +44,9 @@ def run_xp(server, args):
         save(X, Y, path)
         X, Y = load(path)
         results[a] = postprocessing(X, Y)
+
+    if args.no_plot:
+        return
         
     if server.pb.name[0]=="F":
         title = f"{server.pb.name[2:]} - {int(args.noise*100)}% noise ({noise_type} fitness noise)"

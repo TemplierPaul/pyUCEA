@@ -29,6 +29,7 @@ parser.add_argument('--epsilon', type=float, default=1, help='Epsilon')
 # Runs
 parser.add_argument('--evals', type=int, dest="total_evals" ,default=1000, help='Number of generations')
 parser.add_argument('--n', dest="n_evals", type=int, default=1, help='Number of evaluations')
+parser.add_argument('--no_plot', default=False, help='Stop plot', action='store_true')
 
 # Add argument "algos" as list of values
 parser.add_argument('--algos', type=str, nargs='+', default=['ea', "rs", "ucea"], help='Algorithm to run') 
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     rank = comm.Get_rank()
 
     args = parser.parse_args()
-    # flush(args)
+    # flush(str(PROBLEMS.keys()) + "\n")
     basepb = PROBLEMS[args.problem]()
     
     noise_wrapper = PROBLEMS[f"noise_{args.noise_type}"]

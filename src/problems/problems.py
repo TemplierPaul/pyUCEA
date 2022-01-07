@@ -1,9 +1,11 @@
 import numpy as np
-from ..utils.models import get_genome_size, gym_flat_net
+from ..utils.models import get_genome_size, gym_flat_net, min_conv
 from ..algos.rl_agent import Agent
 from .env.env import make_env
+from .env.minatar import MINATAR_ENVS
 
 PROBLEMS={}
+MINATAR_FRAMES = 2000
 
 def register_pb(name):
     def wrapped(pb):
@@ -83,7 +85,7 @@ class RL(Problem):
         self.Net = cfg["net"]
         self.n_genes = get_genome_size(self.Net, c51=False)
         self.name = cfg["env"]
-        self.max_fit = 200
+        self.max_fit = cfg["max_fit"]
         self.bool_ind = False
 
         env = make_env(self.config["env"])
@@ -135,6 +137,7 @@ def f():
     cfg = {
         "env":game,
         "episode_frames":200,
+        "max_fit":200,
         # "c51":False,
         "stack_frames": 1,
         "net":gym_flat_net(game, 10)
@@ -142,86 +145,72 @@ def f():
     pb = RL(cfg)
     return pb
 
+@register_pb("min-breakout")
+def f():
+    game = "min-breakout"
+    cfg = {
+        "env":game,
+        "episode_frames":MINATAR_FRAMES,
+        "max_fit":None,
+        # "c51":False,
+        "stack_frames": 1,
+        "net":min_conv(game)
+    }
+    pb = RL(cfg)
+    return pb
 
-## Wrapper for noisy env: additional noise on the fitness
-@register_pb("noise_fitness")
-class NoisyFit:
-    def __init__(self, pb, noise=0.5, normal=True):
-        self.pb = pb
-        self.noise = noise
-        self.normal=normal
-        self.pb.name = f"F_{self.pb.name}"
+@register_pb("min-si")
+def f():
+    game = "min-space_invaders"
+    cfg = {
+        "env":game,
+        "episode_frames":MINATAR_FRAMES,
+        "max_fit":None,
+        # "c51":False,
+        "stack_frames": 1,
+        "net":min_conv(game)
+    }
+    pb = RL(cfg)
+    return pb
 
-    def __repr__(self):
-        return f"Noisy ({int(self.noise*100)}%) {self.pb}"
+@register_pb("min-asterix")
+def f():
+    game = "min-asterix"
+    cfg = {
+        "env":game,
+        "episode_frames":MINATAR_FRAMES,
+        "max_fit":None,
+        # "c51":False,
+        "stack_frames": 1,
+        "net":min_conv(game)
+    }
+    pb = RL(cfg)
+    return pb
 
-    def __str__(self):
-        return self.__repr__()
+@register_pb("min-freeway")
+def f():
+    game = "min-freeway"
+    cfg = {
+        "env":game,
+        "episode_frames":MINATAR_FRAMES,
+        "max_fit":None,
+        # "c51":False,
+        "stack_frames": 1,
+        "net":min_conv(game)
+    }
+    pb = RL(cfg)
+    return pb
 
-    def __getattr__(self, key):
-        return self.pb.__getattribute__(key)
-        
-    def get_noise(self):
-        if self.normal:
-            return np.random.randn()
-        else:
-            return np.random.random() * 2 - 1
-        
-    def evaluate(self, genome, noisy=True):
-        real_fit, _ = self.pb.evaluate(genome, seed=0)
-        if not noisy:
-            return real_fit, 0
-        noise = self.get_noise() * self.max_fit * self.noise 
-        return real_fit, noise
-
-# Wrapper for RL with noisy actions, but no additional noise on the fitness
-@register_pb("noise_action")
-class NoisyAction:
-    def __init__(self, pb, noise=0.5, normal=True):
-        self.pb = pb
-        self.noise = noise
-        self.normal=normal
-        # Noisy action (replace function)
-        self.pb.get_action = self.get_action
-        self.pb.name = f"A_{self.pb.name}"
-
-
-    def __repr__(self):
-        return f"Noisy ({int(self.noise*100)}%) {self.pb}"
-
-    def __str__(self):
-        return self.__repr__()
-
-    def __getattr__(self, key):
-        return self.pb.__getattribute__(key)
-        
-    def get_action(self, agent, obs):
-        if np.random.random() < self.noise:
-            return np.random.randint(0, self.pb.n_actions)
-        else:
-            return agent.act(obs)
-
-    def evaluate(self, genome, noisy=True):
-        return self.pb.evaluate(genome)
-
-# Wrapper for RL with noisy actions, but no additional noise on the fitness
-@register_pb("noise_seed")
-class NoisySeed:
-    def __init__(self, pb, noise=0.5, normal=True):
-        self.pb = pb
-        self.noise = noise
-        self.normal=normal
-        self.pb.name = f"S_{self.pb.name}"
-
-    def __repr__(self):
-        return f"Noisy ({int(self.noise*100)}%) {self.pb}"
-
-    def __str__(self):
-        return self.__repr__()
-
-    def __getattr__(self, key):
-        return self.pb.__getattribute__(key)
-
-    def evaluate(self, genome, noisy=True):
-        seed = np.random.randint(0, 100000000)
-        return self.pb.evaluate(genome, seed=seed)
+@register_pb("min-seaquest")
+def f():
+    game = "min-seaquest"
+    cfg = {
+        "env":game,
+        "episode_frames":MINATAR_FRAMES,
+        "max_fit":None,
+        # "c51":False,
+        "stack_frames": 1,
+        "net":min_conv(game)
+    }
+    pb = RL(cfg)
+    return pb

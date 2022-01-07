@@ -71,3 +71,19 @@
 ## Noise on seed
 (Ignore the noise % in the title)
 ![](plots/Uniform/Eval_S_CartPole-v1_0.png)
+
+
+## Minatar 
+
+### Noise on actions
+|%Noise|Breakout | Space Invaders
+|---|---|---|
+|0%|![](plots/Uniform/Eval_A_min-breakout_0.png)|![](plots/Uniform/Eval_A_min-space_invaders_0.png)
+|25%|![](plots/Uniform/Eval_A_min-breakout_25.png)|![](plots/Uniform/Eval_A_min-space_invaders_25.png)
+|50%|![](plots/Uniform/Eval_A_min-breakout_50.png)|![](plots/Uniform/Eval_A_min-space_invaders_50.png)
+|75%|![](plots/Uniform/Eval_A_min-breakout_75.png)|![](plots/Uniform/Eval_A_min-space_invaders_75.png)
+|100%|![](plots/Uniform/Eval_A_min-breakout_100.png)|![](plots/Uniform/Eval_A_min-space_invaders_100.png)
+
+## Noise on seed
+(Ignore the noise % in the title)
+![](plots/Uniform/Eval_S_min-breakout_0.png)|![](plots/Uniform/Eval_S_min-space_invaders_0.png)

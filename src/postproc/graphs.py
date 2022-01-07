@@ -36,11 +36,11 @@ def eval_graph(results, title="", save=None, max_val=None):
 
     if max_val:
         # add horizontal line
-        plt.axhline(y=max_val, color='r', linestyle='-', label='Max value')
+        plt.axhline(y=max_val, color='r', linestyle='--', label='Max value')
 
     plt.legend()
     plt.xlabel("Evaluations")
-    plt.ylabel("Mean true fitness")
+    plt.ylabel("Fitness")
     # plt.xlim(0, 20000)
     plt.title(title)
     if save:
