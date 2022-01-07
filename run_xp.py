@@ -38,12 +38,15 @@ if __name__ == "__main__":
 
     args.n_genes = pb.n_genes
     args.max_fit = pb.max_fit
+    args.bool_ind = pb.bool_ind
 
     if rank == 0:
         # flush("Main node - creating EA\n")
-        server = Server(pb)
-        run_xp(server, args)
-        server.stop()
+        try:
+            server = Server(pb)
+            run_xp(server, args)
+        finally:
+            server.stop()
     else:
         # flush(f"Creating node {rank}\n")
         client = Client(pb)

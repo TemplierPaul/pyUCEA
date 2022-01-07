@@ -1,16 +1,25 @@
 # !/bin/sh
 
-python run_xp.py --gens=20000 --problem=cartpole --n=3 --noise=0
-python run_xp.py --gens=20000 --problem=cartpole --n=3 --noise=0.25
-python run_xp.py --gens=20000 --problem=cartpole --n=3 --noise=0.5
-python run_xp.py --gens=20000 --problem=cartpole --n=3 --noise=0.75
-python run_xp.py --gens=20000 --problem=cartpole --n=3 --noise=1
-python run_xp.py --gens=20000 --problem=cartpole --n=3 --noise=2
+n_proc=6
+n_runs=2
 
-# python run_xp.py --gens=200 --normal_noise --n=3 --noise=0
-# python run_xp.py --gens=200 --normal_noise --n=3 --noise=0.25
-# python run_xp.py --gens=200 --normal_noise --n=3 --noise=0.5
-# python run_xp.py --gens=200 --normal_noise --n=3 --noise=0.75
-# python run_xp.py --gens=200 --normal_noise --n=3 --noise=1
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --n_pop=20  --evals=20000 --noise 0 --problem=leading_ones
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --n_pop=20  --evals=20000 --noise 0.25 --problem=leading_ones
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --n_pop=20  --evals=20000 --noise 0.5 --problem=leading_ones
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --n_pop=20  --evals=20000 --noise 0.75 --problem=leading_ones
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --n_pop=20  --evals=20000 --noise 1 --problem=leading_ones
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --n_pop=20  --evals=20000 --noise 2 --problem=leading_ones
 
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --n_pop=20  --evals=20000 --noise 0 --problem=all_ones
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --n_pop=20  --evals=20000 --noise 0.25 --problem=all_ones
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --n_pop=20  --evals=20000 --noise 0.5 --problem=all_ones
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --n_pop=20  --evals=20000 --noise 0.75 --problem=all_ones
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --n_pop=20  --evals=20000 --noise 1 --problem=all_ones
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --n_pop=20  --evals=20000 --noise 2 --problem=all_ones
 
+mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --noise 0 --problem=cartpole
+mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --noise 0.25 --problem=cartpole
+mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --noise 0.5 --problem=cartpole
+mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --noise 0.75 --problem=cartpole
+mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --noise 1 --problem=cartpole
+mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --noise 2 --problem=cartpole

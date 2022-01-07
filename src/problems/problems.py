@@ -30,6 +30,7 @@ class AllOnes(Problem):
         self.name = "All_Ones"
         self.n_genes = 10
         self.max_fit = 10
+        self.bool_ind = True
 
     def __repr__(self):
         return f"All Ones - {self.n_genes} genes"
@@ -46,6 +47,7 @@ class LeadingOnes(Problem):
         self.name = "Leading_Ones"
         self.n_genes = 10
         self.max_fit = 10
+        self.bool_ind = True
 
     def __repr__(self):
         return f"Leading Ones - {self.n_genes} genes"
@@ -73,6 +75,7 @@ class RL(Problem):
         self.n_genes = berl.get_genome_size(self.Net, c51=False)
         self.name = env
         self.max_fit = 200
+        self.bool_ind = False
 
     def __repr__(self):
         return f"RL - {self.name}"
@@ -131,9 +134,9 @@ class Noisy:
     def __init__(self, pb, noise=0.5, normal=True):
         self.pb = pb
         self.noise = noise
-        self.max_fit=self.pb.max_fit
-        self.n_genes=self.pb.n_genes
-        self.name=self.pb.name
+        # self.max_fit=self.pb.max_fit
+        # self.n_genes=self.pb.n_genes
+        # self.name=self.pb.name
         self.normal=normal
 
     def __repr__(self):
@@ -141,6 +144,9 @@ class Noisy:
 
     def __str__(self):
         return self.__repr__()
+
+    def __getattr__(self, key):
+        return self.pb.__getattribute__(key)
         
     def get_noise(self):
         if self.normal:

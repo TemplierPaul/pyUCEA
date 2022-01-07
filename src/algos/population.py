@@ -7,6 +7,7 @@ class Population:
         self.args = args
         self.agents = np.array([])
         self.sorted = False
+        self.ind_type = BoolInd if args["bool_ind"] else Ind
         
     def __repr__(self):
         s = "Population:\n"
@@ -18,7 +19,7 @@ class Population:
         return len(self.agents)
         
     def random(self):
-        self.agents = np.array([BoolInd(self.args).random() for _ in range(self.args["n_pop"])])
+        self.agents = np.array([self.ind_type(self.args).random() for _ in range(self.args["n_pop"])])
         self.sorted = False
         return self
         
