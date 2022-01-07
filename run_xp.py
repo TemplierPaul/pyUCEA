@@ -6,13 +6,18 @@ import argparse
 # Create args parser
 parser = argparse.ArgumentParser(description='Run EA on a given problem')
 parser.add_argument('--problem', type=str, default='all_ones', help='Problem to run')
-parser.add_argument('--noise', type=float, default=0, help='Noise level')
-parser.add_argument('--normal_noise', default=False, help='Normal noise', action='store_true')
 parser.add_argument('--n_pop', type=int, default=12, help='Number of agents')
 parser.add_argument('--n_elites', type=int, default=6, help='Number of elites')
 parser.add_argument('--mut_size', type=float, default=0.3, help='Mutation size')
 parser.add_argument('--max_eval', type=int, default=120, help='Max evaluations')
 parser.add_argument('--n_resampling', type=int, default=10, help='Number of resampling')
+
+# Noise type
+noise_types = [k.replace("noise_", "") for k in PROBLEMS.keys() if "noise_" in k]
+parser.add_argument('--noise_type', type=str, default='fitness', choices=noise_types, help='Noise type: fitness / action / seed')
+parser.add_argument('--noise', type=float, default=0, help='Noise level')
+parser.add_argument('--normal_noise', default=False, help='Normal noise', action='store_true')
+
 # UCEA
 parser.add_argument('--delta', type=float, default=0.1, help='Delta')
 parser.add_argument('--scaling_factor', type=float, default=1, help='Scaling factor')
@@ -34,7 +39,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # flush(args)
     basepb = PROBLEMS[args.problem]()
-    pb = Noisy(basepb, noise=args.noise, normal=args.normal_noise)
+    
+    noise_wrapper = PROBLEMS[f"noise_{args.noise_type}"]
+    print(noise_wrapper)
+    pb = noise_wrapper(basepb, noise=args.noise, normal=args.normal_noise)
 
     args.n_genes = pb.n_genes
     args.max_fit = pb.max_fit

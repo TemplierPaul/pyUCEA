@@ -78,23 +78,23 @@ class LeadingOnes(Problem):
 
 
 class RL(Problem):
-    def __init__(self, env):
-        self.config = {
-            "env":env,
-            # "noise_size":0,
-            "reward_clip":False,
-            "episode_frames":200,
-            "c51":False,
-            "stack_frames": 1
-        }
-        self.Net = gym_flat_net(env, 10)
+    def __init__(self, cfg):
+        self.config = cfg
+        self.Net = cfg["net"]
         self.n_genes = get_genome_size(self.Net, c51=False)
         self.name = env
         self.max_fit = 200
         self.bool_ind = False
 
+        env = make_env(self.config["env"], seed=seed, render=render)
+        self.n_actions = env.action_space.n
+        env.close()
+
     def __repr__(self):
         return f"RL - {self.name}"
+
+    def get_action(self, agent, obs):
+        return agent.act(obs)
 
     def evaluate(self, genome, seed=0, render=False, test=False):
         if seed < 0:
@@ -102,9 +102,6 @@ class RL(Problem):
         seed=0
         env = make_env(self.config["env"], seed=seed, render=render)
         agent = self.make_agent(genome)
-
-        # Virtual batch normalization 
-        # agent.model(self.vb)
 
         agent.state.reset()
 
@@ -115,7 +112,7 @@ class RL(Problem):
             done = False
 
             while not done and n_frames < self.config["episode_frames"]:
-                action = agent.act(obs)
+                action = self.get_action(agent, obs)
                 obs, r, done, _ = env.step(action)
 
                 if self.config["reward_clip"]>0:
@@ -140,19 +137,25 @@ class RL(Problem):
 
 @register_pb("cartpole")
 def f():
-    pb = RL("CartPole-v1")
+    game = "CartPole-v1"
+    cfg = {
+        "env":game,
+        "episode_frames":200,
+        "reward_clip":False,
+        "c51":False,
+        "stack_frames": 1,
+        "net":gym_flat_net(game, 10)
+    }
+    pb = RL(cfg)
     return pb
 
 
-## Wrapper for noisy env
-
-class Noisy:
+## Wrapper for noisy env: additional noise on the fitness
+@register_pb("noise_fitness")
+class NoisyFit:
     def __init__(self, pb, noise=0.5, normal=True):
         self.pb = pb
         self.noise = noise
-        # self.max_fit=self.pb.max_fit
-        # self.n_genes=self.pb.n_genes
-        # self.name=self.pb.name
         self.normal=normal
 
     def __repr__(self):
@@ -176,3 +179,31 @@ class Noisy:
             return real_fit, 0
         noise = self.get_noise() * self.max_fit * self.noise 
         return real_fit, noise
+
+# Wrapper for RL with noisy actions, but no additional noise on the fitness
+@register_pb("noise_action")
+class NoisyAction:
+    def __init__(self, pb, noise=0.5, normal=True):
+        self.pb = pb
+        self.noise = noise
+        self.normal=normal
+        # Noisy action (replace function)
+        self.pb.get_action = self.get_action
+
+    def __repr__(self):
+        return f"Noisy ({int(self.noise*100)}%) {self.pb}"
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __getattr__(self, key):
+        return self.pb.__getattribute__(key)
+        
+    def get_action(self, agent, obs):
+        if np.random.random() < self.noise:
+            return np.random.randint(0, self.pb.n_actions)
+        else:
+            return agent.act(obs)
+
+    def evaluate(self, genome, noisy=True):
+        return self.pb.evaluate(genome)
