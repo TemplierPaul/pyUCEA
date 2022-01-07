@@ -7,7 +7,7 @@ import gym
 
 from collections import namedtuple
 
-from ..env import MinatarEnv, CartPoleSwingUp, CustomMountainCarEnv
+from ..problems.env import MinatarEnv, CartPoleSwingUp, CustomMountainCarEnv
 from .layers import *
 from .impala import *
 
