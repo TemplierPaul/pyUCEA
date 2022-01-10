@@ -12,7 +12,6 @@ parser.add_argument('--problem', type=str, default='all_ones', help='Problem to 
 parser.add_argument('--n_pop', type=int, default=12, help='Number of agents')
 parser.add_argument('--n_elites', type=int, default=6, help='Number of elites')
 parser.add_argument('--mut_size', type=float, default=0.3, help='Mutation size')
-parser.add_argument('--max_eval', type=int, default=120, help='Max evaluations')
 parser.add_argument('--n_resampling', type=int, default=10, help='Number of resampling')
 
 # Noise type
@@ -25,6 +24,7 @@ parser.add_argument('--normal_noise', default=False, help='Normal noise', action
 parser.add_argument('--delta', type=float, default=0.1, help='Delta')
 parser.add_argument('--scaling_factor', type=float, default=1, help='Scaling factor')
 parser.add_argument('--epsilon', type=float, default=1, help='Epsilon')
+parser.add_argument('--max_eval', type=int, default=32, help='Max evaluations per generation in UCEA')
 
 # Runs
 parser.add_argument('--evals', type=int, dest="total_evals" ,default=1000, help='Number of generations')
