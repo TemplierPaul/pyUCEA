@@ -1,7 +1,7 @@
 # !/bin/sh
 
-n_proc=6
-n_runs=1
+n_proc=16
+n_runs=3
 
 # Binary
 # mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=20000 --noise 0 --problem=leading_ones
@@ -35,7 +35,10 @@ n_runs=1
 # mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --problem=cartpole --noise_type=seed
 
 # mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=20000 --noise 0 --problem=min-breakout --noise_type=action --n_pop=16
-mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=20000 --noise 0 --problem=min-si --noise_type=action --n_pop=16
+# mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=20000 --noise 0 --problem=min-si --noise_type=action --n_pop=16
+
+# Procgen
+mpirun --use-hwthread-cpus -n $n_proc python run_xp.py --n=$n_runs --evals=100 --noise 0 --problem=bigfish --noise_type=seed --n_pop=32 --n_elites=6 --max_eval=48 --mut_size=0.01
 
 # Performance comparison
 # mpirun -n 1 python run_xp.py --n=1 --evals=2000 --noise 0 --problem=cartpole --noise_type=action --algos rs --no_plot 

@@ -17,7 +17,7 @@ def make_procgen_env(env_id, seed, render=False):
     if seed is None:
         seed = 0
 
-    print("Level", seed)
+    # print("Level", seed)
 
     env = procgen.gym_registration.make_env(
         env_name=env_name, 

@@ -1,11 +1,12 @@
 import numpy as np
-from ..utils.models import get_genome_size, gym_flat_net, min_conv
+from ..utils.models import get_genome_size, gym_flat_net, min_conv, impala
 from ..algos.rl_agent import Agent
 from .env.env import make_env
 from .env.minatar import MINATAR_ENVS
 
 PROBLEMS={}
 MINATAR_FRAMES = 2000
+PROCGEN_FRAMES = 100000
 
 def register_pb(name):
     def wrapped(pb):
@@ -211,6 +212,45 @@ def f():
         # "c51":False,
         "stack_frames": 1,
         "net":min_conv(game)
+    }
+    pb = RL(cfg)
+    return pb
+
+@register_pb("bigfish")
+def f():
+    game = "bigfish"
+    cfg = {
+        "env": game,
+        "episode_frames": PROCGEN_FRAMES,
+        "max_fit": None,
+        "stack_frames": 1,
+        "net": impala(game)
+    }
+    pb = RL(cfg)
+    return pb
+
+@register_pb("bossfight")
+def f():
+    game = "bossfight"
+    cfg = {
+        "env": game,
+        "episode_frames": PROCGEN_FRAMES,
+        "max_fit": None,
+        "stack_frames": 1,
+        "net": impala(game)
+    }
+    pb = RL(cfg)
+    return pb
+
+@register_pb("coinrun")
+def f():
+    game = "coinrun"
+    cfg = {
+        "env": game,
+        "episode_frames": PROCGEN_FRAMES,
+        "max_fit": None,
+        "stack_frames": 1,
+        "net": impala(game)
     }
     pb = RL(cfg)
     return pb
