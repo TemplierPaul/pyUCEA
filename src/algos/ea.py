@@ -1,5 +1,6 @@
 from .population import *
 from ..problems.mpi import *
+from .ind import Ind
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -78,9 +79,8 @@ class EA:
         return self
 
     def evaluate_elite(self):
-        eval_inds = [deepcopy(self.best_ind) for i in range(self.args["n_test_evals"])]
-        for i in eval_inds:
-            i.reset_fitness()
+        eval_inds = [Ind(args=self.args, genome=self.best_ind.genome)
+                     for i in range(self.args["n_test_evals"])]
         self.server.batch_evaluate(eval_inds, seed_min=self.args["evo_seed_max"], seed_max=100000)
         mean_fit = np.mean([i.fitness for i in eval_inds])
         self.logger.info(f"{self.gen},{self.total_evals},{mean_fit}")
