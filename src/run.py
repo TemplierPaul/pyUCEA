@@ -8,6 +8,8 @@ from .postproc.postprocessing import *
 import pandas as pd
 import numpy as np
 import datetime
+import logging
+import os
 
 def multi_run(algo, cfg, server, n, name=""):
     X = [[] for _ in range(n)] # Evaluations
@@ -36,11 +38,29 @@ def run_xp(server, args):
     results = {}
 
     for algo in algos:
+        n = args.n_evals
+        X = [[] for _ in range(n)] # Evaluations
+        Y = [[] for _ in range(n)] # Fitness
+
         a = algo.__name__
-        X, Y = multi_run(algo, cfg, server, args.n_evals, name=f'{algo.__name__} | {args.problem} | {args.noise}')
         path = f'saves/{noise_type}/Data_{a}_{server.pb.name}_{int(args.noise*100)}'
+        path += f'_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}/'
+        if not os.path.exists(path):
+            os.makedirs(path)
+        name=f'{algo.__name__} | {args.problem} | {args.noise}'
+        for i in range(n):
+            ea = algo(cfg, server)
+            ea.logger = logging.getLogger(f'{algo.__name__}_{args.problem}_{args.noise}_{i}')
+            ea.logger.setLevel(logging.INFO)
+            handler = logging.FileHandler(path+f'/eval_{i}.csv', mode='w')
+            handler.setLevel(logging.INFO)
+            ea.logger.addHandler(handler)
+            X[i], Y[i] = ea.run(name=name)
+
+        # X, Y = multi_run(algo, cfg, server, args.n_evals,
+        # path = f'saves/{noise_type}/Data_{a}_{server.pb.name}_{int(args.noise*100)}'
         # add timestamp to path
-        path += f'_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
+        # path += f'_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
         save(X, Y, path)
         print("\nSaved to " + path + "\n")
         sys.stdout.flush()

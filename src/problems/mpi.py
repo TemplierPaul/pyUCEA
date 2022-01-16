@@ -56,7 +56,7 @@ class Client:
     def evaluate(self, genome, seed=-1):
         # time.sleep(np.random.random())
         # flush(msg=f"{self.rank} evaluating {genome}\n")
-        f, noise = self.pb.evaluate(genome)
+        f, noise = self.pb.evaluate(genome, seed)
         return f, noise
 
 
@@ -87,12 +87,16 @@ class Server(Client):
         for i in self.waitings:
             # Send new agent to evaluate
             # unique ID
+            seed_min = kwargs.get("seed_min", -1)
+            seed_max = kwargs.get("seed_max", -1)
+            if seed == -1 and seed_max > 0:
+                seed = np.random.randint(seed_min, seed_max)
             
             d = {
                 "data": {
                     "genome": agents[index].genome,
                     "index": index,
-                    "seed":seed
+                    "seed": seed
                 },
                 "stop": False,
             }

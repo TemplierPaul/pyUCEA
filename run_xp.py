@@ -26,6 +26,11 @@ parser.add_argument('--scaling_factor', type=float, default=1, help='Scaling fac
 parser.add_argument('--epsilon', type=float, default=1, help='Epsilon')
 parser.add_argument('--max_eval', type=int, default=32, help='Max evaluations per generation in UCEA')
 
+# Test evals
+parser.add_argument('--n_test_evals', type=int, default=72, help='Test evaluations on different seeds')
+parser.add_argument('--evo_seed_max', type=int, default=200, help='Max seed for evolution envs')
+parser.add_argument('--test_eval_interval', type=int, default=100, help='Number of evals before doing a test eval')
+
 # Runs
 parser.add_argument('--evals', type=int, dest="total_evals" ,default=1000, help='Number of generations')
 parser.add_argument('--n', dest="n_evals", type=int, default=1, help='Number of evaluations')

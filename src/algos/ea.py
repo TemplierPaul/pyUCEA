@@ -1,9 +1,11 @@
 from .population import *
+from ..problems.mpi import *
 import numpy as np
 import math
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-from ..problems.mpi import *
+from copy import deepcopy
+import logging
 
 ALGOS = {}
 
@@ -22,6 +24,8 @@ class EA:
         self.pop = Population(args).random()
         self.total_evals = 0
         self.gen=0
+        self.best_ind = None
+        self.best_fit = -np.Inf
         
     def __len__(self):
         return len(self.pop)
@@ -53,10 +57,10 @@ class EA:
         self.pop.add(children)
         self.pop.sorted=False
         return self
-    
+
     def evaluate_children(self):
         children = [i for i in self.pop if len(i.fitnesses) == 0]
-        self.server.batch_evaluate(children)
+        self.server.batch_evaluate(children, seed_min=0, seed_max=self.args["evo_seed_max"])
         self.total_evals += len(children)
         for i in self.pop.agents:
             i.lifetime += len(children)
@@ -64,7 +68,21 @@ class EA:
         self.pop.update()
         self.pop.sort()
         return len(children)
-    
+
+    def update_best(self):
+        self.pop.sort()
+        best = self.pop[0]
+        if best.fitness > self.best_fit:
+            self.best_ind = deepcopy(best)
+            self.best_fit = best.fitness
+        return self
+
+    def evaluate_elite(self):
+        eval_inds = [deepcopy(self.best_ind) for i in range(self.args["n_test_evals"])]
+        self.server.batch_evaluate(eval_inds, seed_min=self.args["evo_seed_max"], seed_max=100000)
+        mean_fit = np.mean([i.fitness for i in eval_inds])
+        self.logger.info(f"{self.gen},{self.total_evals},{mean_fit}")
+
     def step(self):
         if self.gen > 0:
             self.update()
@@ -82,12 +100,18 @@ class EA:
         pbar = tqdm(total=self.args["total_evals"])
         pbar.set_description(name)
         X, Y = [], []
+        eval_interval = self.args["total_evals"] / self.args["test_eval_interval"]
+        eval_check = eval_interval
         while self.total_evals < self.args["total_evals"]:
             self.step()
             f = np.max([np.mean(i.true_fitnesses) for i in self])
             pbar.update(self.total_evals - pbar.n)
             X.append(self.total_evals)
             Y.append(f)
+            if self.total_evals > eval_check:
+                self.update_best()
+                self.evaluate_elite()
+                eval_check += eval_interval
         pbar.close()
         return X, Y
 
