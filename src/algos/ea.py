@@ -49,11 +49,11 @@ class EA:
         return candidates[best]
 
     def update(self):
-        self.get_elites()
         children = []
         for _ in range(self.args["n_pop"]-len(self)):
             parent = self.get_parent()
             children.append(parent.mutate())
+        self.get_elites()
         self.pop.add(children)
         self.pop.sorted=False
         return self
