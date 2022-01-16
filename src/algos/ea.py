@@ -51,7 +51,7 @@ class EA:
 
     def update(self):
         children = []
-        for _ in range(self.args["n_pop"]-len(self)):
+        for _ in range(self.args["n_pop"]-self.args["n_elites"]):
             parent = self.get_parent()
             children.append(parent.mutate())
         self.get_elites()
