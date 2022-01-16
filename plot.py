@@ -17,12 +17,9 @@ warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
 # Create args parser
 parser = argparse.ArgumentParser(description='Plot results from a save file')
-parser.add_argument('--problem', type=str, default='all_ones', help='Problem to run')
-noise_types = [k.replace("noise_", "") for k in PROBLEMS.keys() if "noise_" in k]
-parser.add_argument('--noise_type', type=str, default='fitness', choices=noise_types, help='Noise type: fitness / action / seed')
-parser.add_argument('--noise', type=float, default=0, help='Noise level')
-parser.add_argument('--normal_noise', default=False, help='Normal noise', action='store_true')
-parser.add_argument('--algos', type=str, nargs='+', default=['ea', "rs", "ucea"], help='Algorithm to run')
+parser.add_argument('--dirs', type=str, nargs='+', help='Save directories to plot')
+parser.add_argument('--eval', default=False, help='plot eval graphs', action='store_true')
+parser.add_argument('--out', type=str, default='png', help='Output type')
 
 def find(pattern, path):
     result = []
@@ -36,33 +33,33 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    basepb = PROBLEMS[args.problem]()
-    noise_type='Normal' if args.normal_noise else 'Uniform'
-    algos = [ALGOS[i.lower()] for i in args.algos]
-    noise_wrapper = PROBLEMS[f"noise_{args.noise_type}"]
-    pb = noise_wrapper(basepb, noise=args.noise, normal=args.normal_noise)
-    args.max_fit = pb.max_fit
-
     results = {}
 
-    for algo in algos:
-        a = algo.__name__
-        dirs = find(f'Data_{a}_{pb.name}_{int(args.noise*100)}*', f'saves/{noise_type}/')
-        print(dirs)
-        path = dirs[-1] # TODO : if there are multiple dates, take most recent?
-        print(path)
-        if os.path.isdir(path):
-            X, Y = load(path)
+    for d in args.dirs:
+        parts = d.split("/")
+        assert parts[0] == "saves"
+        noise_type = parts[1]
+        _, a, noise_wrapper, pb_name, noise, day, time = parts[2].split("_")
+        # TODO: doesn't work for problems with "_" in name (Leading_Ones, space_invaders)
+        if os.path.isdir(d):
+            root = "eval" if args.eval else "run"
+            X, Y = load(d, root)
         else:
-            raise Exception("No file " + path)
+            raise Exception("No file " + d)
         results[a] = postprocessing(X, Y)
 
-    if pb.name[0]=="F":
-        title = f"{pb.name[2:]} - {int(args.noise*100)}% noise ({noise_type} fitness noise)"
-    elif pb.name[0]=="A":
-        title = f"{pb.name[2:]} - {int(args.noise*100)}% noise (Action noise)"
-    elif pb.name[0]=="S":
-        title = f"{pb.name[2:]} (Seed noise)"
+    if noise_wrapper == "F":
+        title = f"{pb_name} - {noise}% noise ({noise_type} fitness noise)"
+    elif noise_wrapper == "A":
+        title = f"{pb_name} - {noise}% noise (Action noise)"
+    elif noise_wrapper == "S":
+        title = f"{pb_name} (Seed noise)"
+    if args.eval:
+        title += " Eval"
 
-    path = f"plots/{noise_type}/Eval_{pb.name}_{int(args.noise*100)}.png"
-    eval_graph(results, title=title, save=path, max_val=args.max_fit)
+    path = f"plots/{noise_type}/Eval_{noise_wrapper}_{pb_name}_{noise}"
+    if args.eval:
+        path += "_eval"
+    path += "." + args.out
+    print(path)
+    eval_graph(results, title=title, save=path)
