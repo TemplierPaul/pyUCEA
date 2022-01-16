@@ -62,13 +62,13 @@ def save(X, Y, path):
         df = pd.DataFrame({"evals":X[i], "fitness":Y[i]})
         df.to_csv(f"{path}/run_{i}.csv")
 
-def load(path):
+def load(path, t="run"):
     X = []
     Y = []
     i = 0
     while True:
         try:
-            df = pd.read_csv(f"{path}/run_{i}.csv")
+            df = pd.read_csv(f"{path}/{t}_{i}.csv")
             X.append(df["evals"].values)
             Y.append(df["fitness"].values)
             i += 1
