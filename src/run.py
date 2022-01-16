@@ -47,15 +47,12 @@ def run_xp(server, args):
         path += f'_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}/'
         if not os.path.exists(path):
             os.makedirs(path)
-        name=f'{algo.__name__} | {args.problem} | {args.noise}'
+        cfg["path"] = path
+        cfg["name"] = a
         for i in range(n):
+            cfg["num"] = i
             ea = algo(cfg, server)
-            ea.logger = logging.getLogger(f'{algo.__name__}_{args.problem}_{args.noise}_{i}')
-            ea.logger.setLevel(logging.INFO)
-            handler = logging.FileHandler(path+f'/eval_{i}.csv', mode='w')
-            handler.setLevel(logging.INFO)
-            ea.logger.addHandler(handler)
-            X[i], Y[i] = ea.run(name=name)
+            X[i], Y[i] = ea.run()
 
         # X, Y = multi_run(algo, cfg, server, args.n_evals,
         # path = f'saves/{noise_type}/Data_{a}_{server.pb.name}_{int(args.noise*100)}'

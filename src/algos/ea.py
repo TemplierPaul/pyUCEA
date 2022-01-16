@@ -24,9 +24,15 @@ class EA:
         self.server = server
         self.pop = Population(args).random()
         self.total_evals = 0
-        self.gen=0
+        self.gen = 0
         self.best_ind = None
         self.best_fit = -np.Inf
+        self.logger = logging.getLogger('_'.join([str(args[k]) for k in ['name', 'problem', 'noise', 'num']]))
+        self.logger.setLevel(logging.INFO)
+        handler = logging.FileHandler(args['path'] + '/eval_' + str(args['num']) + '.csv', mode='w')
+        handler.setLevel(logging.INFO)
+        self.logger.addHandler(handler)
+        self.logger.info(',evals,fitness')
         
     def __len__(self):
         return len(self.pop)
@@ -98,9 +104,10 @@ class EA:
         self.gen += 1
         return self
     
-    def run(self, name=""):
+    def run(self):
         pbar = tqdm(total=self.args["total_evals"])
-        pbar.set_description(name)
+        desc = (' | '.join([str(self.args[k]) for k in ['name', 'problem', 'noise', 'num']]))
+        pbar.set_description(desc)
         X, Y = [], []
         eval_interval = self.args["total_evals"] / self.args["test_eval_interval"]
         eval_check = eval_interval
