@@ -79,6 +79,8 @@ class EA:
 
     def evaluate_elite(self):
         eval_inds = [deepcopy(self.best_ind) for i in range(self.args["n_test_evals"])]
+        for i in eval_inds:
+            i.reset_fitness()
         self.server.batch_evaluate(eval_inds, seed_min=self.args["evo_seed_max"], seed_max=100000)
         mean_fit = np.mean([i.fitness for i in eval_inds])
         self.logger.info(f"{self.gen},{self.total_evals},{mean_fit}")
