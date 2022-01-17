@@ -101,6 +101,7 @@ class EA:
         self.total_evals += len(self.pop.agents)
         self.pop.sorted=False
         self.pop.sort()
+        self.update_best()
         self.gen += 1
         return self
     
