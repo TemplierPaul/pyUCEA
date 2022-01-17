@@ -1,0 +1,101 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.10.32
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.8.2
+    t:
+      1:
+      - 1
+      4: 3.8.2
+      5: 0.10.32
+      8:
+      - 5
+algo:
+  desc: null
+  value: EA
+algos:
+  desc: null
+  value:
+  - ea
+  - rs
+  - ucea
+bool_ind:
+  desc: null
+  value: false
+delta:
+  desc: null
+  value: 0.1
+epsilon:
+  desc: null
+  value: 1
+log_freq:
+  desc: null
+  value: 1
+max_eval:
+  desc: null
+  value: 32
+max_fit:
+  desc: null
+  value: 200
+mut_size:
+  desc: null
+  value: 0.01
+n_elites:
+  desc: null
+  value: 6
+n_evals:
+  desc: null
+  value: 3
+n_genes:
+  desc: null
+  value: 182
+n_pop:
+  desc: null
+  value: 12
+n_resampling:
+  desc: null
+  value: 10
+no_plot:
+  desc: null
+  value: false
+noise:
+  desc: null
+  value: 0.0
+noise_name:
+  desc: null
+  value: action - 0.0
+noise_type:
+  desc: null
+  value: action
+normal_noise:
+  desc: null
+  value: false
+problem:
+  desc: null
+  value: cartpole
+scaling_factor:
+  desc: null
+  value: 1
+total_evals:
+  desc: null
+  value: 2000
+train_seeds:
+  desc: null
+  value: 200
+val_freq:
+  desc: null
+  value: 5
+val_seeds:
+  desc: null
+  value: 1000
+val_size:
+  desc: null
+  value: 10
+wandb:
+  desc: null
+  value: ucea

@@ -3,7 +3,7 @@ from .problems import *
 ## Wrapper for noisy env: additional noise on the fitness
 @register_pb("noise_fitness")
 class NoisyFit:
-    def __init__(self, pb, noise=0.5, normal=True):
+    def __init__(self, pb, noise=0.5, normal=True, **kwargs):
         self.pb = pb
         self.noise = noise
         self.normal=normal
@@ -34,7 +34,7 @@ class NoisyFit:
 # Wrapper for RL with noisy actions, but no additional noise on the fitness
 @register_pb("noise_action")
 class NoisyAction:
-    def __init__(self, pb, noise=0.5, normal=True):
+    def __init__(self, pb, noise=0.5, normal=True, **kwargs):
         self.pb = pb
         self.noise = noise
         self.normal=normal
@@ -64,11 +64,14 @@ class NoisyAction:
 # Wrapper for RL with noisy actions, but no additional noise on the fitness
 @register_pb("noise_seed")
 class NoisySeed:
-    def __init__(self, pb, noise=0.5, normal=True):
+    def __init__(self, pb, noise=0.5, normal=True, train_seeds=1000000, eval_seeds=1000000, **kwargs):
         self.pb = pb
         self.noise = noise
         self.normal=normal
         self.pb.name = f"S_{self.pb.name}"
+        self.train_seeds = train_seeds
+        self.eval_seeds = eval_seeds
+        self.status = None
 
     def __repr__(self):
         return f"Noisy ({int(self.noise*100)}%) {self.pb}"
@@ -79,6 +82,18 @@ class NoisySeed:
     def __getattr__(self, key):
         return self.pb.__getattribute__(key)
 
+    def train(self):
+        self.status = "train"
+
+    def eval(self):
+        self.status = "eval"
+
     def evaluate(self, genome, noisy=True):
-        seed = np.random.randint(0, 100000000)
+        if self.status == "train":
+            seed = np.random.randint(0, self.train_seeds)
+        elif self.status == "eval":
+            seed = np.random.randint(self.train_seeds, self.train_seeds + self.eval_seeds)
+        else:
+            seed = np.random.randint(0, 100000000)
+
         return self.pb.evaluate(genome, seed=seed)

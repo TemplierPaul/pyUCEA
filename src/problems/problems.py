@@ -28,6 +28,12 @@ class Problem:
     def evaluate(self, genome, **kwargs):
         pass
 
+    def train(self):
+        pass
+
+    def eval(self):
+        pass
+
 
 @register_pb("all_ones")
 class AllOnes(Problem):

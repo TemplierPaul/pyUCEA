@@ -19,6 +19,13 @@ noise_types = [k.replace("noise_", "") for k in PROBLEMS.keys() if "noise_" in k
 parser.add_argument('--noise_type', type=str, default='fitness', choices=noise_types, help='Noise type: fitness / action / seed')
 parser.add_argument('--noise', type=float, default=0, help='Noise level')
 parser.add_argument('--normal_noise', default=False, help='Normal noise', action='store_true')
+# Arguments for train / validation seed ranges
+parser.add_argument('--train_seeds', type=int, default=200, help='Train max seed')
+parser.add_argument('--val_seeds', type=int, default=1000, help='Validation max seed')
+# Validation eval frequency
+parser.add_argument('--val_freq', type=int, default=5, help='Validation eval frequency')
+# Validation size
+parser.add_argument('--val_size', type=int, default=10, help='Validation size')
 
 # UCEA
 parser.add_argument('--delta', type=float, default=0.1, help='Delta')
@@ -27,9 +34,13 @@ parser.add_argument('--epsilon', type=float, default=1, help='Epsilon')
 parser.add_argument('--max_eval', type=int, default=32, help='Max evaluations per generation in UCEA')
 
 # Runs
-parser.add_argument('--evals', type=int, dest="total_evals" ,default=1000, help='Number of generations')
+parser.add_argument('--evals', type=int, dest="total_evals" ,default=1000, help='Number of evaluations')
 parser.add_argument('--n', dest="n_evals", type=int, default=1, help='Number of evaluations')
 parser.add_argument('--no_plot', default=False, help='Stop plot', action='store_true')
+# Wandb project name
+parser.add_argument('--wandb', type=str, default="", help='Wandb project name')
+# Log frequency
+parser.add_argument('--log_freq', type=int, default=1, help='Log frequency')
 
 # Add argument "algos" as list of values
 parser.add_argument('--algos', type=str, nargs='+', default=['ea', "rs", "ucea"], help='Algorithm to run') 
@@ -45,7 +56,13 @@ if __name__ == "__main__":
     basepb = PROBLEMS[args.problem]()
     
     noise_wrapper = PROBLEMS[f"noise_{args.noise_type}"]
-    pb = noise_wrapper(basepb, noise=args.noise, normal=args.normal_noise)
+    pb = noise_wrapper(
+        basepb, 
+        noise=args.noise, 
+        normal=args.normal_noise,
+        train_seeds=args.train_seeds,
+        val_seeds=args.val_seeds,
+        )
 
     args.n_genes = pb.n_genes
     args.max_fit = pb.max_fit
