@@ -39,6 +39,9 @@ parser.add_argument('--n', dest="n_evals", type=int, default=1, help='Number of 
 parser.add_argument('--no_plot', default=False, help='Stop plot', action='store_true')
 # Wandb project name
 parser.add_argument('--wandb', type=str, default="", help='Wandb project name')
+# Save freq and path
+parser.add_argument('--save_freq', type=int, default=10, help='Save frequency')
+parser.add_argument('--save_path', type=str, default="./genomes", help='Save path')
 # Log frequency
 parser.add_argument('--log_freq', type=int, default=1, help='Log frequency')
 

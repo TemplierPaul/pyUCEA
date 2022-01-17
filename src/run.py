@@ -42,7 +42,7 @@ def run_xp(server, args):
         # add timestamp to path
         path += f'_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
         save(X, Y, path)
-        print("\nSaved to " + path + "\n")
+        # print("\nSaved to " + path + "\n")
         sys.stdout.flush()
         X, Y = load(path)
         results[a] = postprocessing(X, Y)

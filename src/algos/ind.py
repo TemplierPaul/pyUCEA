@@ -1,8 +1,20 @@
 import numpy as np
 from copy import deepcopy
+import os
+import errno
+
+def create_path(path):
+    try:
+        os.makedirs(path)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
 
 class Ind:
-    def __init__(self, args, genome=None):
+    def __init__(self, args, genome=None, path=None):
+        if path is not None:
+            self.load(path)
+            return
         self.args = args
         self.genome = genome
         self.fitnesses = []
@@ -22,7 +34,7 @@ class Ind:
         return f'Ind ({self.args["n_genes"]}) | {self.fitness:.2} / {self.n_evals}'
     
     def __str__(self):
-        return self.__repr__()
+        return self.__repr__()   
 
     def reset_fitness(self):
         self.fitnesses = []
@@ -39,6 +51,31 @@ class Ind:
         new_g = self.genome + noise
         new_i = Ind(self.args, genome=new_g)
         return new_i
+
+    def save(self, path):
+        d = {
+            "genome": self.genome,
+            "fitnesses": self.fitnesses,
+            "true_fitnesses": self.true_fitnesses,
+            "lifetime": self.lifetime,
+            "beta": self.beta
+        }
+        # save compressed
+        if not path.endswith(".npz"):
+            path += ".npz"
+        if "/" in path:
+            create_path(path[:path.rfind("/")])
+        np.savez_compressed(path, **d)
+        return self
+
+    def load(self, path):
+        d = np.load(path)
+        self.genome = d["genome"]
+        self.fitnesses = d["fitnesses"]
+        self.true_fitnesses = d["true_fitnesses"]
+        self.lifetime = d["lifetime"]
+        self.beta = d["beta"]
+        return self
 
 
 class BoolInd(Ind):

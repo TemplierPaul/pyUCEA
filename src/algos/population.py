@@ -68,7 +68,7 @@ class Population:
     
     def plot(self, real_fit=None):
         plt.figure(figsize=(16, 8))
-        plt.subplot(121)
+        plt.subplot(121) 
         self.sort()
         for k in range(len(self)):
             i = self[k]
@@ -92,3 +92,16 @@ class Population:
         children = np.array(children)
         self.agents = np.concatenate([self.agents, children])
         self.sorted = False
+
+    def save(self, path):
+        self.sort()
+        for i in range(len(self)):
+            self[i].save(f"{path}/{i}.npz")
+        return self
+
+    def load(self, path):
+        self.agents = np.array(
+            [self.ind_type(self.args).load(f"{path}/{i}.npz") for i in range(self.args["n_pop"])]
+            )
+        self.sorted = False
+        return self

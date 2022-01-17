@@ -6,6 +6,9 @@ from tqdm import tqdm
 from ..problems.mpi import *
 from ..utils.logger import Logger
 import warnings
+# warnings.filterwarnings("ignore")
+import json
+import datetime
 
 try: 
     import wandb
@@ -44,6 +47,12 @@ class EA:
         self.wandb_run = None
         self.set_wandb(args["wandb"])
 
+        self.args["gen_evals"] = {0:0}
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
+        self.runname = f"{self.args['problem']}_{self.__class__.__name__}_{timestamp}"
+        self.args["path"] = f"{self.args['save_path']}/{self.runname}"
+        flush(f"\nSaving to {self.args['save_path']}/{self.runname}")
+
     def __len__(self):
         return len(self.pop)
     
@@ -81,14 +90,47 @@ class EA:
             self.wandb_run = None
     
     def log(self):
-        # d = {
-        #         "generations": self.gen,
-        #     }
         d = self.logger.export()
-        # d = {**d, **l}
         if self.wandb_run is not None: # pragma: no cover
             wandb.log(d)
         return d
+
+    # Save
+    def save(self, path):
+        path = path + "/" + self.runname
+        os.makedirs(path, exist_ok=True)
+        # Save config
+        self.args["gen_evals"][self.gen] = self.total_evals
+        config_path = path + "/config.json"
+        with open(config_path, 'w') as outfile:
+            json.dump(self.args, outfile)
+        
+        # Save population
+        pop_path = path + f"/population/gen_{self.gen}"
+        self.pop.save(pop_path)
+        # print(f"Saved population to {pop_path}")
+
+    def load(self, path, gen=None):
+        # Load config
+        config_path = path + "/config.json"
+        with open(config_path, 'r') as infile:
+            self.args = json.load(infile)
+
+        # Load population
+        if gen is None:
+            # find last file
+            files = os.listdir(path + "/population")
+            files = [i for i in files if i.startswith("gen_")]
+            files = [int(i.split("_")[1]) for i in files]
+            files.sort()
+            gen = files[-1]
+        pop_path = path + f"/population/gen_{gen}"
+        self.pop = Population(self.args).load(pop_path)
+        
+        self.gen = gen
+        self.total_evals = int(self.args["gen_evals"][str(self.gen)])
+        return self
+
 
     # Specific agents
     def get_elites(self):
@@ -163,10 +205,10 @@ class EA:
             # Add validation step
             if self.args["val_freq"]> 0 and self.gen % self.args["val_freq"] == 0:
                 self.get_validation(log=True)
-            # val_f = self.logger.last(key="validation fitness") or 0
-            # pbar.set_description(name + f" -> {val_f:.2f}")
             if self.gen % self.args["log_freq"] == 0:
                 self.log()
+            if self.gen % self.args["save_freq"] == 0:
+                self.save(self.args["save_path"])
         f = np.max([np.mean(i.true_fitnesses) for i in self])
         self.logger("final fitness", f)
         fit = self.get_validation(log=(self.args["val_freq"]> 0))
