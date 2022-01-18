@@ -2,6 +2,8 @@ import numpy as np
 import gym
 from gym import spaces
 from minatar import Environment
+import seaborn as sns
+import matplotlib.colors as colors
 
 ## Minatar wrapper
 ## Inspired from https://github.com/qlan3/gym-games/blob/master/gym_minatar/envs/base.py
@@ -15,12 +17,21 @@ MINATAR_ENVS=[
 ]
 
 class MinatarEnv(gym.Env):
-    metadata = {'render.modes': ['human', 'rgb_array']}
+    metadata = {'render.modes': ['human', 'rgb_array'], 'video.frames_per_second': 30 }
 
     def __init__(self, game_name, **kwargs):
         self.game_name = game_name.replace("min-", "")
         self.display_time = 50
         self.init(**kwargs)
+
+    #     self.cmap = None
+    #     self.n_channels = 0 
+        
+    # def set_cmap(self, state):
+    #     self.n_channels = state.shape[2]
+    #     self.cmap = sns.color_palette("cubehelix", self.n_channels)
+    #     self.cmap.insert(0,(0,0,0))
+    #     self.cmap=colors.ListedColormap(self.cmap)
 
     def init(self, **kwargs):
         self.game = Environment(env_name=self.game_name, **kwargs)
@@ -34,6 +45,7 @@ class MinatarEnv(gym.Env):
 
     def reset(self):
         self.game.reset()
+        self.set_cmap(self.game.state())
         return self.game.state()
 
     def seed(self, seed=None):

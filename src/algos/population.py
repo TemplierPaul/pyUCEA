@@ -18,8 +18,8 @@ class Population:
     def __len__(self):
         return len(self.agents)
         
-    def random(self):
-        self.agents = np.array([self.ind_type(self.args).random() for _ in range(self.args["n_pop"])])
+    def random(self, pb):
+        self.agents = np.array([self.ind_type(self.args).random(pb) for _ in range(self.args["n_pop"])])
         self.sorted = False
         return self
         

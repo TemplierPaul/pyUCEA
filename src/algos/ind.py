@@ -42,8 +42,12 @@ class Ind:
         self.lifetime = 0
         return self
         
-    def random(self):
-        self.genome=np.random.randn(self.args["n_genes"])
+    def random(self, pb=None):
+        if pb is None:
+            self.genome=np.random.randn(self.args["n_genes"])
+        else:
+            self.genome=pb.random_genome()
+            assert len(self.genome) == self.args["n_genes"]
         return self
     
     def mutate(self):

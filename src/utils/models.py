@@ -26,6 +26,12 @@ def get_genome_size(Net, c51=False):
         vec = torch.nn.utils.parameters_to_vector(params)
     return len(vec.cpu().numpy())
 
+def init_weights(m):
+    if isinstance(m, nn.Linear):
+        torch.nn.init.xavier_uniform(m.weight)
+        m.bias.data.fill_(0.01)
+
+
 # Flat net for Atari RAM and gym envs
 class FFNet(nn.Module):
     def __init__(self, n_in, h_size, n_out):

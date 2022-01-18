@@ -31,7 +31,7 @@ class EA:
     def __init__(self, args, server):
         self.args = args
         self.server = server
-        self.pop = Population(args).random()
+        self.pop = Population(args).random(pb)
         self.total_evals = 0
         self.gen=0
         self.logger = Logger()
@@ -181,11 +181,9 @@ class EA:
     def get_validation(self, log=True):
         # Get elite
         self.pop.sort()
-        elite = self.pop[0]
-        # for i in self:
-        #     assert elite.fitness >= i.fitness
-        # Get validation fitness
-        fit = np.mean(self.server.validation(elite, self.args["val_size"]))
+        elites = self.pop[:self.args["n_elites"]]
+        fit = np.max([np.mean(self.server.validation(i, self.args["val_size"])) for i in elites])
+        
         if log:
             self.logger("validation evaluations", self.total_evals)
             self.logger("validation fitness", fit)
