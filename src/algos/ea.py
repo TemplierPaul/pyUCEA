@@ -200,6 +200,7 @@ class EA:
             self.logger("evaluations", self.total_evals)
             self.logger("fitness", f)
             self.logger("generation", self.gen)
+            self.logger("scaling factor", self.pop.scaling_factor)
             # Add validation step
             if self.args["val_freq"]> 0 and self.gen % self.args["val_freq"] == 0:
                 self.get_validation(log=True)

@@ -20,6 +20,7 @@ class Ind:
         self.fitnesses = []
         self.true_fitnesses = []
         self.lifetime = 0
+        self.u_g_0 = 0
         self.beta = np.inf
         
     @property

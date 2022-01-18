@@ -8,6 +8,7 @@ class Population:
         self.agents = np.array([])
         self.sorted = False
         self.ind_type = BoolInd if args["bool_ind"] else Ind
+        self.scaling_factor = args["scaling_factor"] or 1.0
         
     def __repr__(self):
         s = "Population:\n"
@@ -35,18 +36,31 @@ class Population:
     
     def set_bounds(self, ind):
         u = ind.n_evals
-        t = ind.lifetime
+        u_0 = ind.u_g_0
+        t = ind.lifetime / 2 
         d = self.args["delta"]
         n = len(self.agents)
-        ind.beta = self.args["scaling_factor"] * np.sqrt(
-            np.log(1.25 * n * (t ** 4) / d) / (2.0 * u)
+        k = 1.2
+        a = 2
+        # ind.beta = self.args["scaling_factor"] * np.sqrt(
+        #     np.log(1.25 * n * (t ** 4) / d) / (2.0 * u)
+        # )
+        ind.beta = self.scaling_factor * np.sqrt(
+            np.log(
+                n * k * (t**a) * (u_0 + t) / d
+            ) / (2.0 * u)
         )
         return ind
-    
-    # def add_eval(self, ind, fit, noise):
-    #     ind.fitnesses.append(fit + noise)
-    #     ind.true_fitnesses.append(fit)
-    #     self.update()
+
+    def new_gen(self):
+        for i in self:
+            i.lifetime = 0
+            i.u_g_0 = i.n_evals
+            if len(i.fitnesses) > 0:
+                max_fit = np.max(i.fitnesses)
+                self.scaling_factor = max(self.scaling_factor, max_fit)
+        return self
+
     
     def update(self):
         for i in self.agents:

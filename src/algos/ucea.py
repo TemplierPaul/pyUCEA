@@ -13,6 +13,7 @@ class UCEA(EA):
     
     def step(self):
         if self.gen > 0:
+            self.pop.new_gen()
             self.update()
         gen_evals = self.evaluate_children()
         while gen_evals < self.args["max_eval"]:

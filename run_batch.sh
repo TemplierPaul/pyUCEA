@@ -33,7 +33,7 @@ wandb="ucea"
 # mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --noise 0.75 --wandb=$wandb --problem=cartpole --noise_type=action
 # mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --noise 1 --wandb=$wandb --problem=cartpole --noise_type=action --train_seeds=10000000 --val_seeds=10000000
 
-mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --problem=cartpole --noise_type=seed --train_seeds=10000000 --val_seeds=10000000
+mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --problem=cartpole --noise_type=seed --train_seeds=10000000 --val_seeds=10000000 --algos ucea
 
 # mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=20000 --noise 0 --wandb=$wandb --problem=min-breakout --noise_type=action --n_pop=16
 # mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=20000 --noise 0 --wandb=$wandb --problem=min-si --noise_type=action --n_pop=16

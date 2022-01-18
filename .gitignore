@@ -151,3 +151,4 @@ cython_debug/
 # Saves
 saves/*
 genomes/*
+plts/*
