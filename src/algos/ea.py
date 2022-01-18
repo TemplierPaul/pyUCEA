@@ -31,7 +31,7 @@ class EA:
     def __init__(self, args, server):
         self.args = args
         self.server = server
-        self.pop = Population(args).random(pb)
+        self.pop = Population(args).random(server.pb)
         self.total_evals = 0
         self.gen=0
         self.logger = Logger()
