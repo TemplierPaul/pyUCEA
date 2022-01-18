@@ -1,8 +1,9 @@
 import numpy as np
-from ..utils.models import get_genome_size, gym_flat_net, min_conv, impala
+from ..utils.models import get_genome_size, gym_flat_net, init_weights, min_conv, impala
 from ..algos.rl_agent import Agent
 from .env.env import make_env
 from .env.minatar import MINATAR_ENVS
+import torch
 
 PROBLEMS={}
 MINATAR_FRAMES = 2000
@@ -24,6 +25,9 @@ class Problem:
 
     def __str__(self):
         return self.__repr__()
+
+    def random_genome(self):
+        return np.random.randn(self.args["n_genes"])
     
     def evaluate(self, genome, **kwargs):
         pass
@@ -102,6 +106,14 @@ class RL(Problem):
     def __repr__(self):
         return f"RL - {self.name}"
 
+    def random_genome(self):
+        net = self.Net(c51=False).double()
+        init_weights(net)
+        with torch.no_grad():
+            params = net.parameters()
+            vec = torch.nn.utils.parameters_to_vector(params)
+        return vec.cpu().double().numpy()
+
     def get_action(self, agent, obs):
         return agent.act(obs)
 
@@ -131,6 +143,31 @@ class RL(Problem):
             env.close()
         # self.frames += n_frames
         return total_r, 0
+
+    def render(self, genome, seed=0, save_path=None):
+        env = make_env(self.config["env"], seed=seed, render=True)
+        if save_path is not None:
+            env = gym.wrappers.Monitor(env, "./videos/cartpole", force=True)
+
+        agent = self.make_agent(genome)
+
+        agent.state.reset()
+
+        try:
+            obs = env.reset()
+            n_frames = 0
+            done = False
+
+            while not done and n_frames < self.config["episode_frames"]:
+                action = self.get_action(agent, obs)
+                obs, r, done, _ = env.step(action)
+                env.render()
+                n_frames += 1
+
+        finally:
+            env.close()
+        # self.frames += n_frames
+        return 0
 
     def make_agent(self, genome=None):
         i = Agent(self.Net, self.config)
@@ -221,6 +258,7 @@ def f():
     }
     pb = RL(cfg)
     return pb
+
 @register_pb("bigfish")
 def f():
     game = "bigfish"
@@ -250,32 +288,6 @@ def f():
 @register_pb("coinrun")
 def f():
     game = "coinrun"
-    cfg = {
-        "env": game,
-        "episode_frames": PROCGEN_FRAMES,
-        "max_fit": None,
-        "stack_frames": 1,
-        "net": impala(game)
-    }
-    pb = RL(cfg)
-    return pb
-
-@register_pb("starpilot")
-def f():
-    game = "starpilot"
-    cfg = {
-        "env": game,
-        "episode_frames": PROCGEN_FRAMES,
-        "max_fit": None,
-        "stack_frames": 1,
-        "net": impala(game)
-    }
-    pb = RL(cfg)
-    return pb
-
-@register_pb("leaper")
-def f():
-    game = "leaper"
     cfg = {
         "env": game,
         "episode_frames": PROCGEN_FRAMES,
