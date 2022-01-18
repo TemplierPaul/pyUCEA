@@ -297,3 +297,29 @@ def f():
     }
     pb = RL(cfg)
     return pb
+
+@register_pb("starpilot")
+def f():
+    game = "starpilot"
+    cfg = {
+        "env": game,
+        "episode_frames": PROCGEN_FRAMES,
+        "max_fit": None,
+        "stack_frames": 1,
+        "net": impala(game)
+    }
+    pb = RL(cfg)
+    return pb
+
+@register_pb("leaper")
+def f():
+    game = "leaper"
+    cfg = {
+        "env": game,
+        "episode_frames": PROCGEN_FRAMES,
+        "max_fit": None,
+        "stack_frames": 1,
+        "net": impala(game)
+    }
+    pb = RL(cfg)
+    return pb
