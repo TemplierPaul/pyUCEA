@@ -58,7 +58,7 @@ class Population:
             i.u_g_0 = i.n_evals
             if len(i.fitnesses) > 0:
                 max_fit = np.max(i.fitnesses)
-                if "scaling_factor" not in args:
+                if "scaling_factor" not in self.args:
                     self.scaling_factor = max(self.scaling_factor, max_fit)
         return self
 
