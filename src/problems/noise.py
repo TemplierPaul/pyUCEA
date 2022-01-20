@@ -91,9 +91,9 @@ class NoisySeed:
     def evaluate(self, genome, noisy=True):
         if self.status == "train":
             seed = np.random.randint(0, self.train_seeds)
-        elif self.status == "eval":
-            seed = np.random.randint(self.train_seeds, self.train_seeds + self.eval_seeds)
         else:
+            # TODO: use split set
+            # seed = np.random.randint(self.train_seeds, self.train_seeds + self.eval_seeds)
             seed = np.random.randint(0, 100000000)
 
         return self.pb.evaluate(genome, seed=seed)
