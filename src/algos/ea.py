@@ -77,6 +77,7 @@ class EA:
             d = {**d, **(self.args)}
             self.wandb_run = wandb.init(
                 project=project,
+                entity=self.args["entity"],
                 config=d
             )
             print("wandb run:", wandb.run.name)
