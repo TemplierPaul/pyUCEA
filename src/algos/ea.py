@@ -157,7 +157,6 @@ class EA:
     def evaluate_children(self):
         children = [i for i in self.pop if len(i.fitnesses) == 0]
         self.server.batch_evaluate(children)
-        self.total_evals += len(children)
         for i in self.pop.agents:
             i.lifetime += len(children)
         self.pop.sorted=False
