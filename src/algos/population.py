@@ -53,13 +53,15 @@ class Population:
         return ind
 
     def new_gen(self):
+        if self.args["scaling_type"] == "last": # Reset scaling factor to forget previous generations
+            self.scaling_factor = 1.0
         for i in self:
             i.lifetime = 0
             i.u_g_0 = i.n_evals
-            if len(i.fitnesses) > 0:
+            if self.args["scaling_type"] != "constant" and len(i.fitnesses) > 0:
+                # Only update if we have a previous fitness
                 max_fit = np.max(i.fitnesses)
-                if "scaling_factor" not in self.args:
-                    self.scaling_factor = max(self.scaling_factor, max_fit)
+                self.scaling_factor = max(self.scaling_factor, max_fit)
         return self
 
     
