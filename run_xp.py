@@ -1,4 +1,5 @@
 from src.run import *
+from src.problems.problems import PROCGEN_NETS
 
 from mpi4py import MPI
 import argparse
@@ -47,15 +48,17 @@ parser.add_argument('--wandb', type=str, default="", help='Wandb project name')
 parser.add_argument('--job', type=str, default="", help='Job name')
 parser.add_argument('--entity', default=None, help='Wandb entity name')
 # Save freq and path
-parser.add_argument('--save_freq', type=int, default=10, help='Save frequency')
+parser.add_argument('--save_freq', type=int, default=50, help='Save frequency')
 parser.add_argument('--save_path', type=str, default="./genomes", help='Save path')
 # Log frequency
 parser.add_argument('--log_freq', type=int, default=1, help='Log frequency')
 
 # Add argument "algos" as list of values
 parser.add_argument('--algos', type=str, nargs='+', default=['ea', "rs", "ucea"], help='Algorithm to run') 
-
-
+# Net from the NETWORKS dict
+parser.add_argument('--net', type=str, default='impala', choices=PROCGEN_NETS.keys(), help='Network to use for Procgen')
+# normalize
+parser.add_argument('--net_norm', default=False, help='Use LayerNorm', action='store_true')
 
 if __name__ == "__main__":
     comm = MPI.COMM_WORLD
@@ -63,7 +66,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     # flush(str(PROBLEMS.keys()) + "\n")
-    basepb = PROBLEMS[args.problem]()
+    basepb = PROBLEMS[args.problem](args)
     
     noise_wrapper = PROBLEMS[f"noise_{args.noise_type}"]
     pb = noise_wrapper(

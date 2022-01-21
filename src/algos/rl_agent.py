@@ -30,7 +30,7 @@ class Agent:
         return self.__repr__()
 
     def make_network(self):
-        self.model = self.Net(c51=False).to(self.device).double()
+        self.model = self.Net().to(self.device).double()
         return self
 
     @property

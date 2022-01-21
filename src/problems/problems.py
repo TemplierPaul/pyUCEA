@@ -1,5 +1,5 @@
 import numpy as np
-from ..utils.models import get_genome_size, gym_flat_net, init_weights, min_conv, impala
+from ..utils.models import get_genome_size, gym_flat_net, init_weights, impala, gym_conv, gym_conv_efficient #, min_conv
 from ..algos.rl_agent import Agent
 from .env.env import make_env
 from .env.minatar import MINATAR_ENVS
@@ -8,6 +8,11 @@ import torch
 PROBLEMS={}
 MINATAR_FRAMES = 2000
 PROCGEN_FRAMES = 100000
+PROCGEN_NETS = {
+    "impala": impala,
+    "conv": gym_conv,
+    "efficient": gym_conv_efficient,
+}
 
 def register_pb(name):
     def wrapped(pb):
@@ -94,7 +99,7 @@ class RL(Problem):
     def __init__(self, cfg):
         self.config = cfg
         self.Net = cfg["net"]
-        self.n_genes = get_genome_size(self.Net, c51=False)
+        self.n_genes = get_genome_size(self.Net)
         self.name = cfg["env"]
         self.max_fit = cfg["max_fit"]
         self.bool_ind = False
@@ -107,7 +112,7 @@ class RL(Problem):
         return f"RL - {self.name}"
 
     def random_genome(self):
-        net = self.Net(c51=False).double()
+        net = self.Net().double()
         init_weights(net)
         with torch.no_grad():
             params = net.parameters()
@@ -176,150 +181,144 @@ class RL(Problem):
         return i
 
 @register_pb("cartpole")
-def f():
+def f(args):
     game = "CartPole-v1"
     cfg = {
         "env":game,
         "episode_frames":200,
         "max_fit":200,
-        # "c51":False,
         "stack_frames": 1,
         "net":gym_flat_net(game, 10)
     }
     pb = RL(cfg)
     return pb
 
-@register_pb("min-breakout")
-def f():
-    game = "min-breakout"
-    cfg = {
-        "env":game,
-        "episode_frames":MINATAR_FRAMES,
-        "max_fit":None,
-        # "c51":False,
-        "stack_frames": 1,
-        "net":min_conv(game)
-    }
-    pb = RL(cfg)
-    return pb
+# @register_pb("min-breakout")
+# def f(args):
+#     game = "min-breakout"
+#     cfg = {
+#         "env":game,
+#         "episode_frames":MINATAR_FRAMES,
+#         "max_fit":None,
+#         "stack_frames": 1,
+#         "net":min_conv(game)
+#     }
+#     pb = RL(cfg)
+#     return pb
 
-@register_pb("min-si")
-def f():
-    game = "min-space_invaders"
-    cfg = {
-        "env":game,
-        "episode_frames":MINATAR_FRAMES,
-        "max_fit":None,
-        # "c51":False,
-        "stack_frames": 1,
-        "net":min_conv(game)
-    }
-    pb = RL(cfg)
-    return pb
+# @register_pb("min-si")
+# def f(args):
+#     game = "min-space_invaders"
+#     cfg = {
+#         "env":game,
+#         "episode_frames":MINATAR_FRAMES,
+#         "max_fit":None,
+#         "stack_frames": 1,
+#         "net":min_conv(game)
+#     }
+#     pb = RL(cfg)
+#     return pb
 
-@register_pb("min-asterix")
-def f():
-    game = "min-asterix"
-    cfg = {
-        "env":game,
-        "episode_frames":MINATAR_FRAMES,
-        "max_fit":None,
-        # "c51":False,
-        "stack_frames": 1,
-        "net":min_conv(game)
-    }
-    pb = RL(cfg)
-    return pb
+# @register_pb("min-asterix")
+# def f(args):
+#     game = "min-asterix"
+#     cfg = {
+#         "env":game,
+#         "episode_frames":MINATAR_FRAMES,
+#         "max_fit":None,
+#         "stack_frames": 1,
+#         "net":min_conv(game)
+#     }
+#     pb = RL(cfg)
+#     return pb
 
-@register_pb("min-freeway")
-def f():
-    game = "min-freeway"
-    cfg = {
-        "env":game,
-        "episode_frames":MINATAR_FRAMES,
-        "max_fit":None,
-        # "c51":False,
-        "stack_frames": 1,
-        "net":min_conv(game)
-    }
-    pb = RL(cfg)
-    return pb
+# @register_pb("min-freeway")
+# def f(args):
+#     game = "min-freeway"
+#     cfg = {
+#         "env":game,
+#         "episode_frames":MINATAR_FRAMES,
+#         "max_fit":None,
+#         "stack_frames": 1,
+#         "net":min_conv(game)
+#     }
+#     pb = RL(cfg)
+#     return pb
 
-@register_pb("min-seaquest")
-def f():
-    game = "min-seaquest"
-    cfg = {
-        "env":game,
-        "episode_frames":MINATAR_FRAMES,
-        "max_fit":None,
-        # "c51":False,
-        "stack_frames": 1,
-        "net":min_conv(game)
-    }
-    pb = RL(cfg)
-    return pb
+# @register_pb("min-seaquest")
+# def f(args):
+#     game = "min-seaquest"
+#     cfg = {
+#         "env":game,
+#         "episode_frames":MINATAR_FRAMES,
+#         "max_fit":None,
+#         "stack_frames": 1,
+#         "net":min_conv(game)
+#     }
+#     pb = RL(cfg)
+#     return pb
 
 @register_pb("bigfish")
-def f():
+def f(args):
     game = "bigfish"
     cfg = {
         "env": game,
         "episode_frames": PROCGEN_FRAMES,
         "max_fit": None,
         "stack_frames": 1,
-        "net": impala(game)
+        "net": PROCGEN_NETS[args.net](game, norm=args.net_norm)
     }
     pb = RL(cfg)
     return pb
 
 @register_pb("bossfight")
-def f():
+def f(args):
     game = "bossfight"
     cfg = {
         "env": game,
         "episode_frames": PROCGEN_FRAMES,
         "max_fit": None,
         "stack_frames": 1,
-        "net": impala(game)
+        "net": PROCGEN_NETS[args.net](game, norm=args.net_norm)
     }
     pb = RL(cfg)
     return pb
 
 @register_pb("coinrun")
-def f():
+def f(args):
     game = "coinrun"
     cfg = {
         "env": game,
         "episode_frames": PROCGEN_FRAMES,
         "max_fit": None,
         "stack_frames": 1,
-        "net": impala(game)
+        "net": PROCGEN_NETS[args.net](game, norm=args.net_norm)
     }
     pb = RL(cfg)
     return pb
 
 @register_pb("starpilot")
-def f():
+def f(args):
     game = "starpilot"
     cfg = {
         "env": game,
         "episode_frames": PROCGEN_FRAMES,
         "max_fit": None,
         "stack_frames": 1,
-        "net": impala(game)
+        "net": PROCGEN_NETS[args.net](game, norm=args.net_norm)
     }
     pb = RL(cfg)
     return pb
 
 @register_pb("leaper")
-def f():
+def f(args):
     game = "leaper"
     cfg = {
         "env": game,
         "episode_frames": PROCGEN_FRAMES,
         "max_fit": None,
         "stack_frames": 1,
-        "net": impala(game)
+        "net": PROCGEN_NETS[args.net](game, norm=args.net_norm)
     }
     pb = RL(cfg)
     return pb

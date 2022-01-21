@@ -1,7 +1,7 @@
 # !/bin/sh
 
 n_proc=6
-n_runs=3
+n_runs=1
 wandb="ucea"
 
 # Binary
@@ -33,7 +33,9 @@ wandb="ucea"
 # mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --noise 0.75 --wandb=$wandb --problem=cartpole --noise_type=action
 # mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --noise 1 --wandb=$wandb --problem=cartpole --noise_type=action --train_seeds=10000000 --val_seeds=10000000
 
-mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=2000 --problem=cartpole --noise_type=seed --train_seeds=10000000 --val_seeds=10000000 --algos ucea
+mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=15 --problem=leaper --noise_type=seed --train_seeds=10000000 --no_plot --algos ucea --max_eval=12 --net=impala --net_norm
+mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=15 --problem=leaper --noise_type=seed --train_seeds=10000000 --no_plot --algos ucea --max_eval=12 --net=conv --net_norm
+mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=15 --problem=leaper --noise_type=seed --train_seeds=10000000 --no_plot --algos ucea --max_eval=12 --net=efficient --net_norm
 
 # mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=20000 --noise 0 --wandb=$wandb --problem=min-breakout --noise_type=action --n_pop=16
 # mpirun -n $n_proc python run_xp.py --n=$n_runs --evals=20000 --noise 0 --wandb=$wandb --problem=min-si --noise_type=action --n_pop=16

@@ -85,7 +85,7 @@ class Ind:
 
 class BoolInd(Ind):
 
-    def random(self):
+    def random(self, pb=None):
         self.genome = np.random.randint(2, size=10) * 1.0
         return self
 
