@@ -137,10 +137,14 @@ class EA:
     def get_elites(self):
         self.pop.agents = self.pop.split()[1]
         return self
-    
+
+    # tournament selection
     def get_parent(self):
         candidates = np.random.choice(self.pop.agents, 3)
-        best = np.argmax([i.fitness for i in candidates])
+        if self.args["tournament_fitness"] == "median":
+            best = np.argmax([i.median_fitness for i in candidates])
+        else:
+            best = np.argmax([i.fitness for i in candidates])
         return candidates[best]
 
     def update(self):

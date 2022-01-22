@@ -26,7 +26,11 @@ class Ind:
     @property
     def fitness(self):
         return np.mean(self.fitnesses) if len(self.fitnesses) > 0 else - np.inf
-    
+
+    @property
+    def median_fitness(self):
+        return np.median(self.fitnesses) if len(self.fitnesses) > 0 else - np.inf
+
     @property
     def n_evals(self):
         return len(self.fitnesses)
