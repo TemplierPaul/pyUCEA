@@ -60,8 +60,7 @@ class Population:
             i.u_g_0 = i.n_evals
             if self.args["scaling_type"] != "constant" and len(i.fitnesses) > 0:
                 # Only update if we have a previous fitness
-                max_fit = np.max(i.fitnesses)
-                self.scaling_factor = max(self.scaling_factor, max_fit)
+                self.scaling_factor = max(self.scaling_factor, i.fitness)
         return self
 
     
