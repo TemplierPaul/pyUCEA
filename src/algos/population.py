@@ -54,7 +54,7 @@ class Population:
 
     def new_gen(self):
         if self.args["scaling_type"] == "last": # Reset scaling factor to forget previous generations
-            self.scaling_factor = 1.0
+            self.scaling_factor = 0.0
         for i in self:
             i.lifetime = 0
             i.u_g_0 = i.n_evals
