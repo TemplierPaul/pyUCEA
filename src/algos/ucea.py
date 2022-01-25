@@ -21,7 +21,7 @@ class UCEA(EA):
             l, h = self.pop.get_limits()
             A, B = self.pop[l[0]], self.pop[h[0]]
             d = self.pop.dist(A, B)
-            if d <= self.args["epsilon"]:
+            if d <= self.pop.epsilon:
                 break
 
             A, B = self.server.batch_evaluate([A, B])

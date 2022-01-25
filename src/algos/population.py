@@ -9,6 +9,9 @@ class Population:
         self.sorted = False
         self.ind_type = BoolInd if args["bool_ind"] else Ind
         self.scaling_factor = args["scaling_factor"] or 1.0
+        self.epsilon = args["epsilon"] or 0.1
+        if not args["epsilon_fixed"]:
+            self.epsilon = self.epsilon * self.scaling_factor
         
     def __repr__(self):
         s = "Population:\n"
@@ -61,6 +64,8 @@ class Population:
             if self.args["scaling_type"] != "constant" and len(i.fitnesses) > 0:
                 # Only update if we have a previous fitness
                 self.scaling_factor = max(self.scaling_factor, i.fitness)
+        if not self.args["epsilon_fixed"]:
+            self.epsilon = self.args["epsilon"] * self.scaling_factor
         return self
 
     

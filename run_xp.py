@@ -37,7 +37,8 @@ parser.add_argument('--scaling_factor', type=float, default=1.0, help='Scaling f
 #   - best: scaling factor is the best fitness overall
 #   - last: scaling factor is the best fitness of the last generation
 parser.add_argument('--scaling_type', type=str, default="constant", choices=["constant", "best", "last"], help='Scaling type')
-parser.add_argument('--epsilon', type=float, default=1, help='Epsilon')
+parser.add_argument('--epsilon_fixed', default=False, help='Set epsilon to a constant value', action='store_true')
+parser.add_argument('--epsilon', type=float, default=0.01, help='Epsilon factor')
 parser.add_argument('--max_eval', type=int, default=32, help='Max evaluations per generation in UCEA')
 
 # Runs
