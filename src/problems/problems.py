@@ -22,7 +22,7 @@ def register_pb(name):
 
 
 class Problem:
-    def __init__(self):
+    def __init__(self, cfg):
         pass
 
     def __repr__(self):
@@ -46,7 +46,7 @@ class Problem:
 
 @register_pb("all_ones")
 class AllOnes(Problem):
-    def __init__(self):
+    def __init__(self, cfg):
         self.name = "All_Ones"
         self.n_genes = 10
         self.max_fit = 10
@@ -62,7 +62,7 @@ class AllOnes(Problem):
 
 @register_pb("float_all_ones")
 class AllOnes(Problem):
-    def __init__(self):
+    def __init__(self, cfg):
         self.name = "Float_All_Ones"
         self.n_genes = 10
         self.max_fit = 10
@@ -77,7 +77,7 @@ class AllOnes(Problem):
 
 @register_pb("leading_ones")
 class LeadingOnes(Problem):
-    def __init__(self):
+    def __init__(self, cfg):
         self.name = "Leading_Ones"
         self.n_genes = 10
         self.max_fit = 10
