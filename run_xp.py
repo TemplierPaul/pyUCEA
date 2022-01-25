@@ -46,7 +46,8 @@ parser.add_argument('--n', dest="n_evals", type=int, default=1, help='Number of 
 parser.add_argument('--no_plot', default=False, help='Stop plot', action='store_true')
 # Wandb project name
 parser.add_argument('--wandb', type=str, default="", help='Wandb project name')
-parser.add_argument('--job', type=str, default="", help='Job name')
+parser.add_argument('--job', type=int, default=0, help='Job id')
+parser.add_argument('--thread', type=int, default=0, help='Job thread')
 parser.add_argument('--entity', default=None, help='Wandb entity name')
 # Save freq and path
 parser.add_argument('--save_freq', type=int, default=50, help='Save frequency')
