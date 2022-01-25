@@ -193,132 +193,35 @@ def f(args):
     pb = RL(cfg)
     return pb
 
-# @register_pb("min-breakout")
-# def f(args):
-#     game = "min-breakout"
-#     cfg = {
-#         "env":game,
-#         "episode_frames":MINATAR_FRAMES,
-#         "max_fit":None,
-#         "stack_frames": 1,
-#         "net":min_conv(game)
-#     }
-#     pb = RL(cfg)
-#     return pb
 
-# @register_pb("min-si")
-# def f(args):
-#     game = "min-space_invaders"
-#     cfg = {
-#         "env":game,
-#         "episode_frames":MINATAR_FRAMES,
-#         "max_fit":None,
-#         "stack_frames": 1,
-#         "net":min_conv(game)
-#     }
-#     pb = RL(cfg)
-#     return pb
+ENV_NAMES = [
+    "bigfish",
+    "bossfight",
+    "caveflyer",
+    "chaser",
+    "climber",
+    "coinrun",
+    "dodgeball",
+    "fruitbot",
+    "heist",
+    "jumper",
+    "leaper",
+    "maze",
+    "miner",
+    "ninja",
+    "plunder",
+    "starpilot",
+]
 
-# @register_pb("min-asterix")
-# def f(args):
-#     game = "min-asterix"
-#     cfg = {
-#         "env":game,
-#         "episode_frames":MINATAR_FRAMES,
-#         "max_fit":None,
-#         "stack_frames": 1,
-#         "net":min_conv(game)
-#     }
-#     pb = RL(cfg)
-#     return pb
-
-# @register_pb("min-freeway")
-# def f(args):
-#     game = "min-freeway"
-#     cfg = {
-#         "env":game,
-#         "episode_frames":MINATAR_FRAMES,
-#         "max_fit":None,
-#         "stack_frames": 1,
-#         "net":min_conv(game)
-#     }
-#     pb = RL(cfg)
-#     return pb
-
-# @register_pb("min-seaquest")
-# def f(args):
-#     game = "min-seaquest"
-#     cfg = {
-#         "env":game,
-#         "episode_frames":MINATAR_FRAMES,
-#         "max_fit":None,
-#         "stack_frames": 1,
-#         "net":min_conv(game)
-#     }
-#     pb = RL(cfg)
-#     return pb
-
-@register_pb("bigfish")
-def f(args):
-    game = "bigfish"
-    cfg = {
-        "env": game,
-        "episode_frames": PROCGEN_FRAMES,
-        "max_fit": None,
-        "stack_frames": 1,
-        "net": PROCGEN_NETS[args.net](game, norm=args.net_norm)
-    }
-    pb = RL(cfg)
-    return pb
-
-@register_pb("bossfight")
-def f(args):
-    game = "bossfight"
-    cfg = {
-        "env": game,
-        "episode_frames": PROCGEN_FRAMES,
-        "max_fit": None,
-        "stack_frames": 1,
-        "net": PROCGEN_NETS[args.net](game, norm=args.net_norm)
-    }
-    pb = RL(cfg)
-    return pb
-
-@register_pb("coinrun")
-def f(args):
-    game = "coinrun"
-    cfg = {
-        "env": game,
-        "episode_frames": PROCGEN_FRAMES,
-        "max_fit": None,
-        "stack_frames": 1,
-        "net": PROCGEN_NETS[args.net](game, norm=args.net_norm)
-    }
-    pb = RL(cfg)
-    return pb
-
-@register_pb("starpilot")
-def f(args):
-    game = "starpilot"
-    cfg = {
-        "env": game,
-        "episode_frames": PROCGEN_FRAMES,
-        "max_fit": None,
-        "stack_frames": 1,
-        "net": PROCGEN_NETS[args.net](game, norm=args.net_norm)
-    }
-    pb = RL(cfg)
-    return pb
-
-@register_pb("leaper")
-def f(args):
-    game = "leaper"
-    cfg = {
-        "env": game,
-        "episode_frames": PROCGEN_FRAMES,
-        "max_fit": None,
-        "stack_frames": 1,
-        "net": PROCGEN_NETS[args.net](game, norm=args.net_norm)
-    }
-    pb = RL(cfg)
-    return pb
+for game in ENV_NAMES:
+    @register_pb(game)
+    def f(args):
+        cfg = {
+            "env": game,
+            "episode_frames": PROCGEN_FRAMES,
+            "max_fit": None,
+            "stack_frames": 1,
+            "net": PROCGEN_NETS[args.net](game, norm=args.net_norm)
+        }
+        pb = RL(cfg)
+        return pb
