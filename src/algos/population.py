@@ -44,14 +44,14 @@ class Population:
         t = ind.lifetime / 2 
         d = self.args["delta"]
         n = len(self.agents)
-        k = 1.2
-        a = 2
+        k = 2.3
+        a = 4
         # ind.beta = self.args["scaling_factor"] * np.sqrt(
         #     np.log(1.25 * n * (t ** 4) / d) / (2.0 * u)
         # )
         ind.beta = self.scaling_factor * np.sqrt(
             np.log(
-                n * k * (t**a) * (u_0 + t) / d
+                n * k * (t**a) / d
             ) / (2.0 * u)
         )
         return ind
