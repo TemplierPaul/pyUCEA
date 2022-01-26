@@ -1,5 +1,6 @@
 from .ind import *
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class Population:
@@ -58,12 +59,18 @@ class Population:
     def new_gen(self):
         if self.args["scaling_type"] == "last": # Reset scaling factor to forget previous generations
             self.scaling_factor = 0.0
+        max_fit = -np.Inf
+        min_fit = np.Inf
         for i in self:
             i.lifetime = 0
             i.u_g_0 = i.n_evals
-            if self.args["scaling_type"] != "constant" and len(i.fitnesses) > 0:
-                # Only update if we have a previous fitness
-                self.scaling_factor = max(self.scaling_factor, i.fitness)
+            if len(i.fitnesses) > 0:
+                max_fit = max(max_fit, i.fitness)
+                min_fit = min(min_fit, i.fitness)
+        if self.args["scaling_type"] == "scale":
+            self.scaling_factor = max_fit - min_fit
+        elif self.args["scaling_type"] != "constant":
+            self.scaling_factor = max(self.scaling_factor, max_fit)
         if not self.args["epsilon_fixed"]:
             self.epsilon = self.args["epsilon"] * self.scaling_factor
         return self
