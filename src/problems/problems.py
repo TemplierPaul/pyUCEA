@@ -46,7 +46,7 @@ class Problem:
 
 @register_pb("all_ones")
 class AllOnes(Problem):
-    def __init__(self, cfg):
+    def __init__(self, name, cfg):
         self.name = "All_Ones"
         self.n_genes = 10
         self.max_fit = 10
@@ -62,7 +62,7 @@ class AllOnes(Problem):
 
 @register_pb("float_all_ones")
 class AllOnes(Problem):
-    def __init__(self, cfg):
+    def __init__(self, name, cfg):
         self.name = "Float_All_Ones"
         self.n_genes = 10
         self.max_fit = 10
@@ -77,7 +77,7 @@ class AllOnes(Problem):
 
 @register_pb("leading_ones")
 class LeadingOnes(Problem):
-    def __init__(self, cfg):
+    def __init__(self, name, cfg):
         self.name = "Leading_Ones"
         self.n_genes = 10
         self.max_fit = 10
@@ -181,7 +181,7 @@ class RL(Problem):
         return i
 
 @register_pb("cartpole")
-def f(args):
+def f_cartpole(name, args):
     game = "CartPole-v1"
     cfg = {
         "env":game,
@@ -194,7 +194,19 @@ def f(args):
     return pb
 
 
-ENV_NAMES = [
+def procgen_pb(g, args):
+    cfg = {
+        "env": g,
+        "episode_frames": PROCGEN_FRAMES,
+        "max_fit": None,
+        "stack_frames": 1,
+        "net": PROCGEN_NETS[args.net](g, norm=args.net_norm)
+    }
+    pb = RL(cfg)
+    return pb
+
+
+PROCGEN_NAMES = [
     "bigfish",
     "bossfight",
     "caveflyer",
@@ -210,18 +222,8 @@ ENV_NAMES = [
     "miner",
     "ninja",
     "plunder",
-    "starpilot",
+    "starpilot"
 ]
 
-for game in ENV_NAMES:
-    @register_pb(game)
-    def f(args):
-        cfg = {
-            "env": game,
-            "episode_frames": PROCGEN_FRAMES,
-            "max_fit": None,
-            "stack_frames": 1,
-            "net": PROCGEN_NETS[args.net](game, norm=args.net_norm)
-        }
-        pb = RL(cfg)
-        return pb
+for game in PROCGEN_NAMES:
+    PROBLEMS[game] = procgen_pb

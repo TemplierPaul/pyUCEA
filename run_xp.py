@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     # flush(str(PROBLEMS.keys()) + "\n")
-    basepb = PROBLEMS[args.problem](args)
+    basepb = PROBLEMS[args.problem](args.problem, args)
     
     noise_wrapper = PROBLEMS[f"noise_{args.noise_type}"]
     pb = noise_wrapper(
