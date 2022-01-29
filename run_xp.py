@@ -23,7 +23,7 @@ parser.add_argument('--noise', type=float, default=0, help='Noise level')
 parser.add_argument('--normal_noise', default=False, help='Normal noise', action='store_true')
 # Arguments for train / validation seed ranges
 parser.add_argument('--train_seeds', type=int, default=200, help='Train max seed')
-parser.add_argument('--val_seeds', type=int, default=1000, help='Validation max seed')
+parser.add_argument('--val_seeds', type=int, default=100000, help='Validation max seed')
 # Validation eval frequency
 parser.add_argument('--val_freq', type=int, default=5, help='Validation eval frequency')
 # Validation size

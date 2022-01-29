@@ -61,16 +61,16 @@ class NoisyAction:
     def evaluate(self, genome, noisy=True):
         return self.pb.evaluate(genome)
 
-# Wrapper for RL with noisy actions, but no additional noise on the fitness
+# Wrapper for RL with noisy seed, but no additional noise on the fitness
 @register_pb("noise_seed")
 class NoisySeed:
-    def __init__(self, pb, noise=0.5, normal=True, train_seeds=1000000, eval_seeds=1000000, **kwargs):
+    def __init__(self, pb, noise=0.5, normal=True, train_seeds=200, val_seeds=100000, **kwargs):
         self.pb = pb
         self.noise = noise
         self.normal=normal
         self.pb.name = f"S_{self.pb.name}"
         self.train_seeds = train_seeds
-        self.eval_seeds = eval_seeds
+        self.val_seeds = val_seeds
         self.status = None
 
     def __repr__(self):
@@ -92,8 +92,7 @@ class NoisySeed:
         if self.status == "train":
             seed = np.random.randint(0, self.train_seeds)
         else:
-            # TODO: use split set
             # seed = np.random.randint(self.train_seeds, self.train_seeds + self.eval_seeds)
-            seed = np.random.randint(0, 100000000)
+            seed = np.random.randint(0, self.val_seeds)
 
         return self.pb.evaluate(genome, seed=seed)
