@@ -102,7 +102,7 @@ class RL(Problem):
         self.n_genes = get_genome_size(self.Net)
         self.name = cfg["env"]
         self.max_fit = cfg["max_fit"]
-        self.bool_ind = False,
+        self.bool_ind = False
         self.discrete = cfg["discrete"]
 
         env = make_env(self.config["env"])
