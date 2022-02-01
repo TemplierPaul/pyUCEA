@@ -66,6 +66,16 @@ def gym_flat_net(env_name, h_size=64):
         return FFNet(n_in, h_size, n_out)
     return wrapped
 
+@register("flat_cont")
+def gym_flat_net_cont(env_name, h_size=64):
+    env = gym.make(env_name)
+    n_in = env.observation_space.shape[0]
+    n_out = env.action_space.shape[0]
+    env.close()
+    def wrapped():
+        return FFNet(n_in, h_size, n_out)
+    return wrapped
+
 ## Procgen DQN
 
 class ConvNet(nn.Module):

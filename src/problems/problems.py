@@ -218,7 +218,7 @@ def f_carracing(name, args):
         "max_fit":1000,
         "stack_frames": 1,
         "discrete":False,
-        "net":gym_flat_net(game, 128)
+        "net":gym_flat_net_cont(game, 128)
     }
     pb = RL(cfg)
     return pb
@@ -232,7 +232,7 @@ def f_carracing(name, args):
         "max_fit":1000,
         "stack_frames": 1,
         "discrete":False,
-        "net":gym_flat_net(game, 128)
+        "net":gym_flat_net_cont(game, 128)
     }
     pb = RL(cfg)
     return pb
@@ -246,7 +246,7 @@ def f_carracing(name, args):
         "max_fit":1000,
         "stack_frames": 1,
         "discrete":False,
-        "net":gym_flat_net(game, 128)
+        "net":gym_flat_net_cont(game, 128)
     }
     pb = RL(cfg)
     return pb
