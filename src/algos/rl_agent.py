@@ -46,7 +46,7 @@ class Agent:
     def genes(self, params):
         if self.model is None:
             self.make_network()
-        assert len(params) == len(self.genes), "Genome size does not fit the network size"
+        assert len(params) == len(self.genes), f"Genome size ({len(params)}) does not fit the network size ({len(self.genes)})"
         if np.isnan(params).any():
             raise
         a = torch.tensor(params, device=self.device)
@@ -61,6 +61,14 @@ class Agent:
             x = self.state.get().to(self.device).double()
             actions = self.model(x).cpu().detach().numpy()
         return int(np.argmax(actions))
+
+    def continuous_act(self, obs):
+        # continuous actions 
+        self.state.update(obs)
+        with torch.no_grad():
+            x = self.state.get().to(self.device).double()
+            actions = self.model(x).cpu().detach().numpy()
+        return actions
 
     def __eq__(self, other): 
         if type(other) != type(self): # pragma: no cover

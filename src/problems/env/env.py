@@ -50,10 +50,11 @@ def make_env(env_id, seed=None, render=False):
         if len(n_in)==3:
             # Atari 2600 preprocessings
             env.close()
-            l = env_id.split("-")
-            new_name = f"{l[0]}NoFrameskip-{l[1]}"
+            if env_id!="CarRacing-v0":
+                l = env_id.split("-")
+                env_id = f"{l[0]}NoFrameskip-{l[1]}"
 
-            env = gym.make(new_name)
+            env = gym.make(env_id)
             env = wrap_canonical(env)
         if seed is not None: env.seed(seed)
         return env

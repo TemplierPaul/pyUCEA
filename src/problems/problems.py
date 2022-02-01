@@ -1,5 +1,5 @@
 import numpy as np
-from ..utils.models import get_genome_size, gym_flat_net, init_weights, impala, gym_conv, gym_conv_efficient #, min_conv
+from ..utils.models import get_genome_size, gym_flat_net, init_weights, impala, gym_conv, gym_conv_efficient, cont_conv #, min_conv
 from ..algos.rl_agent import Agent
 from .env.env import make_env
 from .env.minatar import MINATAR_ENVS
@@ -102,10 +102,11 @@ class RL(Problem):
         self.n_genes = get_genome_size(self.Net)
         self.name = cfg["env"]
         self.max_fit = cfg["max_fit"]
-        self.bool_ind = False
+        self.bool_ind = False,
+        self.discrete = cfg["discrete"]
 
         env = make_env(self.config["env"])
-        self.n_actions = env.action_space.n
+        self.action_space = env.action_space.n if self.discrete else env.action_space
         env.close()
 
     def __repr__(self):
@@ -120,7 +121,7 @@ class RL(Problem):
         return vec.cpu().double().numpy()
 
     def get_action(self, agent, obs):
-        return agent.act(obs)
+        return agent.act(obs) if self.discrete else agent.continuous_act(obs)
 
     def evaluate(self, genome, seed=0, render=False):
         env = make_env(self.config["env"], seed=seed, render=render)
@@ -152,7 +153,7 @@ class RL(Problem):
     def render(self, genome, seed=0, save_path=None):
         env = make_env(self.config["env"], seed=seed, render=True)
         if save_path is not None:
-            env = gym.wrappers.Monitor(env, "./videos/cartpole", force=True)
+            env = gym.wrappers.Monitor(env, save_path, force=True)
 
         agent = self.make_agent(genome)
 
@@ -188,7 +189,22 @@ def f_cartpole(name, args):
         "episode_frames":200,
         "max_fit":200,
         "stack_frames": 1,
+        "discrete":True,
         "net":gym_flat_net(game, 10)
+    }
+    pb = RL(cfg)
+    return pb
+
+@register_pb("carracing")
+def f_carracing(name, args):
+    game = "CarRacing-v0"
+    cfg = {
+        "env":game,
+        "episode_frames":200,
+        "max_fit":1000,
+        "stack_frames": 1,
+        "discrete":False,
+        "net":cont_conv(game, h_size=64, norm=False)
     }
     pb = RL(cfg)
     return pb
@@ -200,6 +216,7 @@ def procgen_pb(g, args):
         "episode_frames": PROCGEN_FRAMES,
         "max_fit": None,
         "stack_frames": 1,
+        "discrete":True,
         "net": PROCGEN_NETS[args.net](g, norm=args.net_norm)
     }
     pb = RL(cfg)

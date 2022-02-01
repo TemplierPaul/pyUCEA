@@ -105,6 +105,16 @@ def gym_conv(env_name, h_size=512, norm=True):
         return ConvNet(h_size, n_out, norm=norm)
     return wrapped
 
+@register("cont_conv")
+def cont_conv(env_name, h_size=512, norm=True):
+    env=gym.make(env_name)
+    n_out = env.action_space.shape[0]
+    env.close()
+    n_channels=3
+    def wrapped():
+        return ConvNet(h_size, n_out, norm=norm)
+    return wrapped
+
 ## Procgen: Data efficient from DQN
 
 class DataEfficientConvNet(nn.Module):

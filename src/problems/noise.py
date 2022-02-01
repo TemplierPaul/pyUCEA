@@ -53,10 +53,18 @@ class NoisyAction:
         return self.pb.__getattribute__(key)
         
     def get_action(self, agent, obs):
-        if np.random.random() < self.noise:
-            return np.random.randint(0, self.pb.n_actions)
-        else:
-            return agent.act(obs)
+        if self.discrete:
+            return (
+                np.random.randint(0, self.pb.action_space)
+                if np.random.random() < self.noise
+                else agent.act(obs)
+            )
+
+        action = agent.continuous_act(obs)
+        h, l = self.action_space.high, self.action_space.low
+        r = np.random.randn(self.action_space.shape[0]) * self.noise
+        noise = r * (h-l) + l
+        return action + noise
 
     def evaluate(self, genome, noisy=True):
         return self.pb.evaluate(genome)
