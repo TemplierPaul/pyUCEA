@@ -1,5 +1,5 @@
 import numpy as np
-from ..utils.models import get_genome_size, gym_flat_net, init_weights, impala, gym_conv, gym_conv_efficient, cont_conv #, min_conv
+from ..utils.models import get_genome_size, gym_flat_net, gym_flat_net_cont, init_weights, impala, gym_conv, gym_conv_efficient, cont_conv #, min_conv
 from ..algos.rl_agent import Agent
 from .env.env import make_env
 from .env.minatar import MINATAR_ENVS
