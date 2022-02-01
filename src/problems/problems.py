@@ -209,6 +209,47 @@ def f_carracing(name, args):
     pb = RL(cfg)
     return pb
 
+@register_pb("ant")
+def f_carracing(name, args):
+    game = "Ant-v2"
+    cfg = {
+        "env":game,
+        "episode_frames":1000,
+        "max_fit":1000,
+        "stack_frames": 1,
+        "discrete":False,
+        "net":gym_flat_net(game, 128)
+    }
+    pb = RL(cfg)
+    return pb
+
+@register_pb("humanoid")
+def f_carracing(name, args):
+    game = "Humanoid-v2"
+    cfg = {
+        "env":game,
+        "episode_frames":1000,
+        "max_fit":1000,
+        "stack_frames": 1,
+        "discrete":False,
+        "net":gym_flat_net(game, 128)
+    }
+    pb = RL(cfg)
+    return pb
+
+@register_pb("standup")
+def f_carracing(name, args):
+    game = "HumanoidStandup-v2"
+    cfg = {
+        "env":game,
+        "episode_frames":1000,
+        "max_fit":1000,
+        "stack_frames": 1,
+        "discrete":False,
+        "net":gym_flat_net(game, 128)
+    }
+    pb = RL(cfg)
+    return pb
 
 def procgen_pb(g, args):
     cfg = {
