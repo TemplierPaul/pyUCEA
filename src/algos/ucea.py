@@ -16,8 +16,6 @@ class UCEA(EA):
             self.pop.new_gen()
             self.update()
         gen_evals = self.evaluate_children()
-        for i in self.pop:
-            i.lifetime = self.args["n_pop"]-self.args["n_elite"]
         while gen_evals < self.args["max_eval"]:
             self.pop.update()
             l, h = self.pop.get_limits()
