@@ -190,7 +190,35 @@ def f_cartpole(name, args):
         "max_fit":200,
         "stack_frames": 1,
         "discrete":True,
-        "net":gym_flat_net(game, 10)
+        "net":gym_flat_net(game, 32)
+    }
+    pb = RL(cfg)
+    return pb
+
+@register_pb("acrobot")
+def f_acrobot(name, args):
+    game = "Acrobot-v1"
+    cfg = {
+        "env":game,
+        "episode_frames":500,
+        "max_fit":500,
+        "stack_frames": 1,
+        "discrete":True,
+        "net":gym_flat_net(game, 32)
+    }
+    pb = RL(cfg)
+    return pb
+
+@register_pb("mountain_car_cont")
+def f_acrobot(name, args):
+    game = "MountainCarContinuous-v0"
+    cfg = {
+        "env":game,
+        "episode_frames":1000,
+        "max_fit":999,
+        "stack_frames": 1,
+        "discrete":False,
+        "net":gym_flat_net_cont(game, 32)
     }
     pb = RL(cfg)
     return pb
@@ -210,7 +238,7 @@ def f_carracing(name, args):
     return pb
 
 @register_pb("pendulum")
-def f_carracing(name, args):
+def f_pendulum(name, args):
     game = "InvertedPendulum-v2"
     cfg = {
         "env":game,
@@ -224,7 +252,7 @@ def f_carracing(name, args):
     return pb
 
 @register_pb("double-pendulum")
-def f_carracing(name, args):
+def f_double_pendulum(name, args):
     game = "InvertedDoublePendulum-v2"
     cfg = {
         "env":game,
@@ -238,7 +266,7 @@ def f_carracing(name, args):
     return pb
 
 @register_pb("ant")
-def f_carracing(name, args):
+def f_ant(name, args):
     game = "Ant-v2"
     cfg = {
         "env":game,
@@ -252,7 +280,7 @@ def f_carracing(name, args):
     return pb
 
 @register_pb("humanoid")
-def f_carracing(name, args):
+def f_humanoid(name, args):
     game = "Humanoid-v2"
     cfg = {
         "env":game,
@@ -266,7 +294,7 @@ def f_carracing(name, args):
     return pb
 
 @register_pb("standup")
-def f_carracing(name, args):
+def f_standup(name, args):
     game = "HumanoidStandup-v2"
     cfg = {
         "env":game,
