@@ -209,6 +209,34 @@ def f_carracing(name, args):
     pb = RL(cfg)
     return pb
 
+@register_pb("pendulum")
+def f_carracing(name, args):
+    game = "InvertedPendulum-v2"
+    cfg = {
+        "env":game,
+        "episode_frames":1000,
+        "max_fit":1000,
+        "stack_frames": 1,
+        "discrete":False,
+        "net":gym_flat_net_cont(game, 64)
+    }
+    pb = RL(cfg)
+    return pb
+
+@register_pb("double-pendulum")
+def f_carracing(name, args):
+    game = "InvertedDoublePendulum-v2"
+    cfg = {
+        "env":game,
+        "episode_frames":1000,
+        "max_fit":1000,
+        "stack_frames": 1,
+        "discrete":False,
+        "net":gym_flat_net_cont(game, 64)
+    }
+    pb = RL(cfg)
+    return pb
+
 @register_pb("ant")
 def f_carracing(name, args):
     game = "Ant-v2"
@@ -218,7 +246,7 @@ def f_carracing(name, args):
         "max_fit":1000,
         "stack_frames": 1,
         "discrete":False,
-        "net":gym_flat_net_cont(game, 128)
+        "net":gym_flat_net_cont(game, 64)
     }
     pb = RL(cfg)
     return pb
@@ -232,7 +260,7 @@ def f_carracing(name, args):
         "max_fit":1000,
         "stack_frames": 1,
         "discrete":False,
-        "net":gym_flat_net_cont(game, 128)
+        "net":gym_flat_net_cont(game, 64)
     }
     pb = RL(cfg)
     return pb
@@ -246,7 +274,7 @@ def f_carracing(name, args):
         "max_fit":1000,
         "stack_frames": 1,
         "discrete":False,
-        "net":gym_flat_net_cont(game, 128)
+        "net":gym_flat_net_cont(game, 64)
     }
     pb = RL(cfg)
     return pb

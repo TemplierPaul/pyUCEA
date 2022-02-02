@@ -25,6 +25,7 @@ class Population:
         
     def random(self, pb):
         self.agents = np.array([self.ind_type(self.args).random(pb) for _ in range(self.args["n_pop"])])
+        self.center = self.agents[0].genome
         self.sorted = False
         return self
         
