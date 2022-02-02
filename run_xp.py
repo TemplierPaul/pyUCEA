@@ -15,6 +15,8 @@ parser.add_argument('--n_elites', type=int, default=6, help='Number of elites')
 parser.add_argument('--mut_size', type=float, default=0.01, help='Mutation size')
 parser.add_argument('--n_resampling', type=int, default=10, help='Number of resampling')
 parser.add_argument('--tournament_fitness', type=str, default='mean', choices=['mean', 'median'], help='Function to use for determining tournmanet winner')
+parser.add_argument('--lr', type=float, default=0.01, help='ES learning rate')
+parser.add_argument('--mutation', type=str, default='ga', choices=['ga', 'es'], help='Mutation type')
 
 # Noise type
 noise_types = [k.replace("noise_", "") for k in PROBLEMS.keys() if "noise_" in k]

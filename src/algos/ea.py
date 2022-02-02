@@ -147,7 +147,7 @@ class EA:
             best = np.argmax([i.fitness for i in candidates])
         return candidates[best]
 
-    def update(self):
+    def ga_update(self):
         children = []
         for _ in range(self.args["n_pop"]-self.args["n_elites"]):
             parent = self.get_parent()
@@ -156,7 +156,33 @@ class EA:
         self.pop.add(children)
         self.pop.sorted=False
         return self
-    
+
+    def es_update(self):
+        self.pop.sort()
+        n_elites = self.args["n_elites"]
+        genes = [i.genome for i in self.pop.agents[:n_elites]]
+        noise = [i - self.pop.center for i in genes]
+        w = np.array([np.log(n_elites + 0.5) - np.log(i) for i in range(1, n_elites + 1)])
+        w /= np.sum(w)
+        for i in range(n_elites):
+            self.pop.center += self.args["lr"] * w[i] * noise[i]
+
+        children = []
+        for _ in range(self.args["n_pop"]-self.args["n_elites"]):
+            genome = self.pop.center + np.random.randn(self.args["n_genes"]) * self.args["mut_size"]
+            children.append(Ind(self.args, genome=genome))
+        self.get_elites()
+        self.pop.add(children)
+        self.pop.sorted=False
+        return self
+
+    def update(self):
+        if self.args["mutation"] == "ga":
+            self.ga_update()
+        else:
+            self.es_update()
+        return self
+
     # Evaluation
     def evaluate_children(self):
         children = [i for i in self.pop if len(i.fitnesses) == 0]
