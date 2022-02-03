@@ -210,7 +210,7 @@ def f_acrobot(name, args):
     return pb
 
 @register_pb("mountain_car_cont")
-def f_acrobot(name, args):
+def f_mountain_car_cont(name, args):
     game = "MountainCarContinuous-v0"
     cfg = {
         "env":game,
