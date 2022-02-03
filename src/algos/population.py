@@ -91,8 +91,8 @@ class Population:
     
     def get_limits(self):
         l, h = self.split()
-        h_limit = np.argsort([i.fitness - i.beta for i in h]) # lowest of the best first
-        l_limit = np.argsort([-1*(i.fitness + i.beta) for i in l]) + self.args["n_elites"] # highest of the others first
+        h_limit = np.argmin([i.fitness - i.beta for i in h]) # lowest of the best first
+        l_limit = np.argmax([i.fitness + i.beta for i in l]) + self.args["n_elites"] # highest of the others first
         return l_limit, h_limit
     
     def plot(self, real_fit=None):

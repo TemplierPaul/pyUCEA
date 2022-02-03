@@ -19,9 +19,14 @@ class UCEA(EA):
         while gen_evals < self.args["max_eval"]:
             self.pop.update()
             l, h = self.pop.get_limits()
-            A, B = self.pop[l[0]], self.pop[h[0]]
+            A, B = self.pop[l], self.pop[h]
             d = self.pop.dist(A, B)
-            if d <= self.pop.epsilon:
+            if d <= self.pop.epsilon or (gen_evals + 2) >= self.args["max_eval"]:
+                self.logger("elite_lower_fitness", A.fitness)
+                self.logger("elite_lower_beta", A.beta)
+                self.logger("rest_upper_fitness", B.fitness)
+                self.logger("rest_upper_beta", B.beta)
+                self.logger("distance", d)
                 break
 
             A, B = self.server.batch_evaluate([A, B])
