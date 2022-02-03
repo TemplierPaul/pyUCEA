@@ -32,6 +32,40 @@ class NoisyFit:
         return real_fit, noise
 
 # Wrapper for RL with noisy actions, but no additional noise on the fitness
+@register_pb("noise_sticky")
+class NoisySticky:
+    def __init__(self, pb, noise=0.5, normal=True, **kwargs):
+        self.pb = pb
+        self.noise = noise
+        self.normal=normal
+        # Noisy action (replace function)
+        self.pb.get_action = self.get_action
+        self.pb.name = f"Y_{self.pb.name}"
+        self.previous_action = None
+
+    def __repr__(self):
+        return f"Sticky ({int(self.noise*100)}%) {self.pb}"
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __getattr__(self, key):
+        return self.pb.__getattribute__(key)
+
+    def get_action(self, agent, obs):
+        if self.previous_action != None and np.random.random() < self.noise:
+            return self.previous_action
+        if self.discrete:
+            act = agent.act(obs)
+        else:
+            act = agent.continuous_act(obs)
+        self.previous_action = act
+        return act
+
+    def evaluate(self, genome, noisy=True):
+        return self.pb.evaluate(genome)
+
+# Wrapper for RL with noisy actions, but no additional noise on the fitness
 @register_pb("noise_action")
 class NoisyAction:
     def __init__(self, pb, noise=0.5, normal=True, **kwargs):
@@ -51,7 +85,7 @@ class NoisyAction:
 
     def __getattr__(self, key):
         return self.pb.__getattribute__(key)
-        
+
     def get_action(self, agent, obs):
         if self.discrete:
             return (
