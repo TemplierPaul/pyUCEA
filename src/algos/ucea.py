@@ -22,10 +22,10 @@ class UCEA(EA):
             A, B = self.pop[l], self.pop[h]
             d = self.pop.dist(A, B)
             if d <= self.pop.epsilon or (gen_evals + 2) >= self.args["max_eval"]:
-                self.logger("elite_lower_fitness", A.fitness)
-                self.logger("elite_lower_beta", A.beta)
-                self.logger("rest_upper_fitness", B.fitness)
-                self.logger("rest_upper_beta", B.beta)
+                self.logger("elite_lower_fitness", B.fitness)
+                self.logger("elite_lower_beta", B.beta)
+                self.logger("rest_upper_fitness", A.fitness)
+                self.logger("rest_upper_beta", A.beta)
                 self.logger("distance", d)
                 break
 
