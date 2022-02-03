@@ -43,10 +43,10 @@ class FFNet(nn.Module):
 
     def forward(self, x):
         x = self.fc1(x)
-        x = F.tanh(x)
+        x = torch.tanh(x)
 
         x = self.fc2(x)
-        x = F.tanh(x)
+        x = torch.tanh(x)
 
         x = self.fc3(x)
         return x
